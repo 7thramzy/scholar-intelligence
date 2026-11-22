@@ -45,3 +45,14 @@ test("numeric minimum and maximum comparisons are deterministic", () => {
   assert.equal(evaluateEligibility([criterion({ comparator: "min", applicantValue: 3.6, requiredValue: 3.5 })]).status, "eligible");
   assert.equal(evaluateEligibility([criterion({ comparator: "max", applicantValue: 3.6, requiredValue: 3.5 })]).status, "ineligible");
 });
+
+test("empty criteria cannot produce an eligible decision", () => {
+  assert.equal(evaluateEligibility([]).status, "uncertain");
+});
+
+test("non-finite numeric inputs remain unknown", () => {
+  const result = evaluateEligibility([
+    criterion({ comparator: "min", applicantValue: Number.NaN, requiredValue: 3.5 })
+  ]);
+  assert.equal(result.status, "uncertain");
+});

@@ -96,6 +96,9 @@ export function evaluateFunding(lines: FundingLine[]): FundingEvaluation {
     (sum, line) => sum + Math.max(0, line.expectedMinorUnits! - line.coveredMinorUnits!),
     0
   );
+  if (![requiredMinorUnits, coveredMinorUnits, uncoveredMinorUnits].every(Number.isSafeInteger)) {
+    throw new RangeError("Funding totals exceed the safe integer range");
+  }
 
   return {
     status: uncoveredMinorUnits === 0 ? "fully-funded-confirmed" : "partially-funded",
