@@ -2,7 +2,7 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest merged commit: a0cbf90f79985839316cb60a11243a311365afe1
+Latest merged commit: e62116ef3dfe76f83f292a60c42163d0415a0a73
 
 ## Completed
 - Agent instructions, project context, architecture, security, decisions, domain model, roadmap, and handoff docs merged.
@@ -18,8 +18,8 @@ Latest merged commit: a0cbf90f79985839316cb60a11243a311365afe1
 - Unit tests cover the core funding and eligibility rules.
 - npm package-lock.json committed and reproducible npm ci configured.
 - Dependency audit reported zero vulnerabilities in successful CI runs.
-- GitHub Actions run 35 passed: npm ci, npm audit, lint, unit tests (27 total), typecheck, and production build.
-- Vercel project linked to 7thramzy/scholar-intelligence. Production deployment for main commit a0cbf90f79985839316cb60a11243a311365afe1 reached READY at https://scholar-intelligence.vercel.app.
+- GitHub Actions run 37 passed: npm ci, npm audit, lint, unit tests (34 total), typecheck, and production build.
+- Vercel project linked to 7thramzy/scholar-intelligence. Production deployment for main commit e62116ef3dfe76f83f292a60c42163d0415a0a73 reached READY at https://scholar-intelligence.vercel.app.
 
 ## Current limitations
 - Opportunity records are browser-local only and do not sync between devices.
@@ -43,9 +43,9 @@ Latest merged commit: a0cbf90f79985839316cb60a11243a311365afe1
 
 ## Next actions
 1. Persist source fetch history with content hashes, HTTP metadata, parser versions, and freshness state; add durable rate limiting before broad public use.
-4. Add robust content parsing with provenance and user review, then connect normalized evidence to opportunity facts.
-5. Wire deterministic eligibility and full-cost funding evaluation into opportunity detail and comparison screens.
-6. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.
-7. Add authentication and privacy boundaries before storing personal profile or documents.
-8. Provision Supabase only as the final infrastructure step, after confirming the organization and that the selected plan/cost is $0; otherwise return for explicit approval.
-9. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
+2. Add robust content parsing with provenance and user review, then connect normalized evidence to opportunity facts.
+3. Wire deterministic eligibility and full-cost funding evaluation into opportunity detail and comparison screens.
+4. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.
+5. Add authentication and privacy boundaries before storing personal profile or documents.
+6. Provision Supabase only as the final infrastructure step, after confirming the organization and that the selected plan/cost is $0; otherwise return for explicit approval.
+7. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
