@@ -14,6 +14,10 @@ Working branch: docs/project-foundation
 ## Foundation documents
 This commit is intended to add AGENTS.md, PROJECT_CONTEXT.md, README.md, and docs for workflow, architecture, decisions, domain model, roadmap, security, and status.
 
+## Starter decision
+- Audited `raj-khan/nextjs-supabase-saas-boilerplate`; rejected blind import due missing lockfile/config, unsafe admin helper, and unvalidated auth callback redirect. See `docs/STARTER_AUDIT.md`.
+- Chosen direction: clean minimal app foundation, selectively reuse only reviewed patterns.
+
 ## Not yet verified / not implemented
 - No application scaffold, package manifest, lockfile, CI, Supabase config, schema, auth, integrations, or deployed app has been verified.
 - No runtime tests or production build have been run.
