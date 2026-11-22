@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createLocalBackup, mergeLocalBackup, parseLocalBackupJson, validateLocalBackup } from "../lib/local-backup";
+import { createLocalBackup, mergeLocalBackup, parseLocalBackupJson, validateLocalBackup, verifyLocalBackupEvidence } from "../lib/local-backup";
+import { createEvidenceSnapshot } from "../lib/evidence";
 import type { BackupOpportunity } from "../lib/local-backup";
 import type { EvidenceSnapshot } from "../lib/evidence";
 
@@ -67,4 +68,20 @@ test("rejects conflicting duplicate IDs rather than overwriting local data", () 
 test("rejects oversized and malformed JSON", () => {
   assert.equal(parseLocalBackupJson("{").ok, false);
   assert.equal(parseLocalBackupJson(" ".repeat(5 * 1024 * 1024 + 1)).ok, false);
+});
+
+test("verifies evidence hashes and rejects modified excerpts", async () => {
+  const validEvidence = await createEvidenceSnapshot({
+    opportunityId: "opp-1",
+    sourceUrl: "https://www.daad.de/scholarships/",
+    factType: "deadline",
+    excerpt: "The application deadline is 31 January 2027 for the next intake."
+  }, {
+    id: "evidence-verified",
+    capturedAt: "2026-11-23T00:00:00.000Z"
+  });
+  const backup = createLocalBackup([opportunity], [validEvidence]);
+  await verifyLocalBackupEvidence(backup);
+  backup.evidence[0].excerpt = "A changed excerpt that no longer matches the stored fingerprint.";
+  await assert.rejects(() => verifyLocalBackupEvidence(backup), /بصمة/);
 });
