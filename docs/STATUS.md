@@ -1,34 +1,36 @@
 # Project status
 
-Last updated: 2026-11-23
-Current implementation branch: feat/app-foundation
+Last verified: 2026-11-23
+Default branch: main
+Implementation merged: 3c7d15c71418dab5959b4bfeee9496b0ae76a082
 
 ## Completed
-- Project foundation documentation merged to main.
-- Third-party starter audited and rejected for blind import; see docs/STARTER_AUDIT.md.
-- Initial Next.js App Router application scaffold and Arabic RTL owner dashboard authored on feat/app-foundation.
-- No database or paid resource has been provisioned.
+- Foundation docs and agent instructions merged to main.
+- Candidate third-party starter audited; blind import rejected. See docs/STARTER_AUDIT.md.
+- Next.js 15.5.29 / React 19.2.9 / TypeScript / Tailwind app scaffold merged.
+- Arabic RTL responsive owner dashboard implemented with empty-state metrics, workflow overview, funding coverage checklist, and evidence-first messaging.
+- npm package-lock.json is present on main.
+- GitHub Actions run 25 passed: npm ci, npm audit, ESLint, TypeScript check, and production build.
+- npm audit reported zero vulnerabilities after applying a global PostCSS override and compatible transitive dependency fixes.
+- Vercel project linked to 7thramzy/scholar-intelligence under the Hobby team.
+- Preview deployment from feat/app-foundation commit 28df2195605f7032d74cdb054254bce49d800f5b reached READY.
 
-## Current implementation
-- Next.js 15 / React 19 / TypeScript / Tailwind CSS.
-- Arabic RTL layout, responsive navigation, dashboard overview, workflow panels, strict funding checklist, evidence-first messaging.
-- Dashboard metrics are empty-state placeholders, not live records.
-- No authentication, database, opportunity ingestion, AI, Gmail, Drive, or file uploads yet.
-
-## Validation status
-- Source files exist on feat/app-foundation.
-- Local clone/build could not run in the execution environment because outbound DNS access to github.com is unavailable.
-- Vercel preview build and CI are pending.
-- npm lockfile has not yet been generated. Generate and commit it before production release.
+## Current limitations
+- Dashboard metrics are placeholders; no live scholarship records are loaded.
+- No sign-in, database, opportunity source ingestion, eligibility engine, funding calculator, AI provider, Gmail/Drive integration, file storage, or reminders are implemented yet.
+- The main-branch production deployment was created after merge and was still QUEUED at last check; do not call production deployment live until it reaches READY and is opened successfully.
+- No browser-based visual QA has been completed.
 
 ## Integrations
-- Supabase connector currently shows zero projects. Database creation is intentionally deferred to the final phase.
-- Vercel Hobby team is available; link the repository and deploy a preview after review.
-- No secrets or personal application documents are stored in this repository.
+- Supabase connector currently lists zero projects. Database provisioning remains deliberately deferred until the final phase.
+- One Supabase organization is visible: r7-yn1's Org. Project creation has not been attempted.
+- Vercel project: scholar-intelligence; team plan Hobby; repository linked.
+- No secrets or personal application documents are stored in the repository.
 
 ## Next actions
-1. Verify branch files and open a pull request.
-2. Connect Vercel and run a preview build; fix errors based on build logs.
-3. Obtain a reproducible npm lockfile.
-4. Merge verified scaffold to main.
-5. Only then provision Supabase, configure Auth/RLS, and test authorization.
+1. Verify the main-branch Vercel production deployment reaches READY and inspect the deployed page.
+2. Add unit tests for deterministic funding and eligibility logic before building those modules.
+3. Build opportunity records, source evidence capture, eligibility rules, total-cost funding evaluator, and saved-opportunity workflows.
+4. Add authentication and privacy boundaries before storing personal profile/documents.
+5. Provision Supabase only as the final infrastructure step, after confirming organization and that the selected plan/cost is $0; otherwise return for explicit approval.
+6. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
