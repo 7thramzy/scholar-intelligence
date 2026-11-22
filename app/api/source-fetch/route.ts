@@ -13,11 +13,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "حجم الطلب أكبر من الحد المسموح." }, { status: 413 });
   }
 
-  const now = Date.now();
-  if (now - lastFetchAt < MIN_GLOBAL_INTERVAL_MS) {
-    return NextResponse.json({ error: "انتظر قليلاً قبل جلب صفحة أخرى." }, { status: 429, headers: { "Retry-After": "5" } });
-  }
-
   let body: unknown;
   try {
     body = await request.json();
@@ -30,6 +25,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "أرسل رابطاً واحداً لا يتجاوز 2048 حرفاً." }, { status: 400 });
   }
 
+  const now = Date.now();
+  if (now - lastFetchAt < MIN_GLOBAL_INTERVAL_MS) {
+    return NextResponse.json({ error: "انتظر قليلاً قبل جلب صفحة أخرى." }, { status: 429, headers: { "Retry-After": "5" } });
+  }
   lastFetchAt = now;
   try {
     const snapshot = await fetchOfficialSourcePage(url);
