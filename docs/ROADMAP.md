@@ -20,8 +20,10 @@
 
 ## Phase 3 — Opportunity core (partially started)
 - Deterministic eligibility and full-funding evaluators with unit tests. (completed; see lib/eligibility.ts and lib/funding.ts)
-- Source registry and evidence model.
-- Program/scholarship normalization.
+- Curated official source registry and strict HTTPS domain classification. (implemented locally; see lib/source-registry.ts)
+- Append-only manual evidence snapshots with SHA-256 fingerprints and source metadata. (implemented locally; see lib/evidence.ts and /evidence)
+- Automated source fetching, parsing, immutable server-side history, and freshness checks. (remaining)
+- Program/scholarship normalization. (remaining)
 - Deterministic eligibility, deadline, and full-funding evaluators.
 - Opportunity search, detail, save, compare.
 

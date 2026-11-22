@@ -30,7 +30,7 @@ export default function Home() {
         <nav className="nav-list" aria-label="التنقل الرئيسي">
           <a className="nav-item active" href="#overview"><Icon>⌂</Icon>نظرة عامة</a>
           <Link className="nav-item" href="/opportunities"><Icon>◇</Icon>الفرص والمنح</Link>
-          <a className="nav-item" href="#eligibility"><Icon>✓</Icon>تقييم الأهلية</a>
+          <Link className="nav-item" href="/evidence"><Icon>✓</Icon>سجل الأدلة</Link>
           <a className="nav-item" href="#funding"><Icon>◈</Icon>تحليل التمويل</a>
           <a className="nav-item" href="#applications"><Icon>▤</Icon>طلبات التقديم</a>
           <a className="nav-item" href="#profile"><Icon>◎</Icon>ملفي الأكاديمي</a>
