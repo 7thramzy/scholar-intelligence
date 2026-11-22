@@ -2,27 +2,30 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest merged commit: 44b4c0fae1fbe51d06b995f6e8f4265141372d6c
+Latest merged commit: a0d5b1be131f403b7793203f468b91e3c1967bbe
 
 ## Completed
 - Agent instructions, project context, architecture, security, decisions, domain model, roadmap, and handoff docs merged.
 - Third-party Next.js/Supabase starter audited and rejected for blind import; see docs/STARTER_AUDIT.md.
-- Next.js 15.5.29 / React 19.2.9 / TypeScript / Tailwind application scaffold merged.
-- Arabic RTL responsive owner dashboard implemented with workflow overview, funding coverage checklist, and evidence-first messaging.
-- Vercel project linked to 7thramzy/scholar-intelligence; production deployment from the initial app foundation reached READY at scholar-intelligence.vercel.app.
+- Next.js 15.5.29 / React 19.2.9 / TypeScript / Tailwind application scaffold.
+- Arabic RTL responsive owner dashboard and local opportunity tracker route.
+- Opportunity tracker supports add/remove, institution, field, deadline, official HTTPS source URL, and preliminary funding claim.
+- Opportunity metadata is saved only in this browser's localStorage; stored records are validated before rendering. No applicant profile, documents, credentials, or secrets are stored there.
+- Deterministic funding evaluator covers tuition, living, housing, insurance, travel, visa, and mandatory fees; missing/unverified cost evidence prevents a full-funding result.
+- Deterministic eligibility evaluator supports hard/soft criteria and explicit unknown state; empty criteria and non-finite numbers cannot produce an eligible result.
+- Unit tests cover the core funding and eligibility rules.
 - npm package-lock.json committed and reproducible npm ci configured.
-- Dependency security override for PostCSS and compatible transitive fixes; npm audit reported zero vulnerabilities in CI.
-- Deterministic funding evaluator implemented for tuition, living, housing, insurance, travel, visa, and mandatory fees.
-- Deterministic eligibility evaluator implemented with hard/soft criteria, explicit unknown state, and no implicit pass for empty criteria.
-- Unit tests cover funding completeness, partial funding, missing/unverified evidence, currency mismatch, negative/fractional amounts, eligibility hard failures, unknowns, soft preferences, one_of, empty criteria, and non-finite numbers.
-- GitHub Actions run 28 passed: npm ci, npm audit, lint, unit tests, typecheck, and production build.
+- Dependency audit reported zero vulnerabilities in successful CI runs.
+- GitHub Actions run 30 passed: npm ci, npm audit, lint, unit tests, typecheck, and production build.
+- Vercel project linked to 7thramzy/scholar-intelligence. Production deployment from main commit 44b4c0fae1fbe51d06b995f6e8f4265141372d6c reached READY. The latest opportunity-tracker merge is awaiting its own production deployment check.
 
 ## Current limitations
-- Dashboard metrics are placeholders; no live scholarship records are loaded.
-- Evaluators are pure tested modules but are not yet wired to forms, stored opportunities, or an evidence ingestion pipeline.
-- No sign-in, database, opportunity source ingestion, AI provider, Gmail/Drive integration, private document storage, or reminders.
-- The most recent main-branch production deployment after the core evaluator and safety-fix merges must be checked for READY before claiming the latest code is live.
-- Browser-based visual QA and responsive device testing have not been completed.
+- Opportunity records are browser-local only and do not sync between devices.
+- The tracker is manual entry; no official source discovery, scraping, parsing, evidence snapshots, freshness checks, or automatic updates yet.
+- Funding and eligibility evaluators are tested pure modules but are not yet wired into the opportunity UI.
+- Funding claim is intentionally displayed as an unverified source claim; no manually entered record is automatically confirmed as fully funded.
+- No sign-in, database, AI provider, Gmail/Drive integration, private document storage, or reminders.
+- No browser-based visual QA or real-device responsive testing has been completed.
 
 ## Integrations
 - Supabase connector currently lists zero projects. Database provisioning remains deliberately deferred until the final phase.
@@ -32,9 +35,10 @@ Latest merged commit: 44b4c0fae1fbe51d06b995f6e8f4265141372d6c
 
 ## Next actions
 1. Verify the latest main-branch Vercel deployment reaches READY and inspect the deployed page.
-2. Build program/scholarship records and source evidence capture with immutable snapshots and freshness tracking.
-3. Wire eligibility and funding evaluators to opportunity detail and comparison screens.
-4. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.
-5. Add authentication and privacy boundaries before storing personal profile or documents.
-6. Provision Supabase only as the final infrastructure step, after confirming the organization and that the selected plan/cost is $0; otherwise return for explicit approval.
-7. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
+2. Add edit/update capability and a safe local export/import for public opportunity metadata.
+3. Build official source registry, evidence capture, immutable snapshots, parser provenance, and freshness tracking.
+4. Wire deterministic eligibility and full-cost funding evaluation into opportunity detail and comparison screens.
+5. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.
+6. Add authentication and privacy boundaries before storing personal profile or documents.
+7. Provision Supabase only as the final infrastructure step, after confirming the organization and that the selected plan/cost is $0; otherwise return for explicit approval.
+8. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
