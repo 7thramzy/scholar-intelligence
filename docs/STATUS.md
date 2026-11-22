@@ -23,12 +23,15 @@ Latest merged commit: a0d5b1be131f403b7793203f468b91e3c1967bbe
 - Opportunity records are browser-local only and do not sync between devices.
 - Source registry now contains eight curated official scholarship/study portals. Domain matching requires HTTPS and exact host/subdomain matching; lookalike suffix domains are rejected.
 - Evidence workspace captures user-copied excerpts linked to a saved opportunity, classifies source-domain trust, timestamps each record, and stores a SHA-256 fingerprint. Evidence is append-only through the UI and remains browser-local.
-- No automatic page fetching, parsing, source freshness checks, or background updates yet.
+- A constrained server-side official-page fetch endpoint now accepts only registered HTTPS domains, validates every redirect against the same registered source, reads robots.txt before the page, enforces a 1 MB body cap and 10-second timeout, and returns extracted text plus a SHA-256 content fingerprint.
+- The evidence workspace can fetch a page for manual review; the user must select/copy the relevant excerpt and explicitly add it to the evidence ledger.
+- Fetch snapshots are returned for review but are not yet persisted as a historical fetch log; freshness monitoring and scheduled refresh remain unimplemented.
 - Funding and eligibility evaluators are tested pure modules but are not yet wired into the opportunity UI.
 - Funding claim is intentionally displayed as an unverified source claim; no manually entered record is automatically confirmed as fully funded.
 - No sign-in, database, AI provider, Gmail/Drive integration, private document storage, or reminders.
 - No browser-based visual QA or real-device responsive testing has been completed.
-- The current evidence fingerprint is a client-side integrity aid, not a digital signature or proof that the excerpt genuinely appeared on the linked page.
+- Evidence fingerprints are integrity aids, not digital signatures or proof that an excerpt genuinely appeared on the linked page.
+- The fetch endpoint is read-only and restricted to the curated domain list. Its in-memory throttle is best-effort on serverless infrastructure, not a durable distributed rate limiter; durable abuse controls and owner authentication are required before broad public use.
 
 ## Integrations
 - Supabase connector currently lists zero projects. Database provisioning remains deliberately deferred until the final phase.
@@ -39,8 +42,8 @@ Latest merged commit: a0d5b1be131f403b7793203f468b91e3c1967bbe
 ## Next actions
 1. Verify the latest main-branch Vercel deployment reaches READY and inspect the deployed page.
 2. Add edit/update capability and safe local export/import for public opportunity metadata.
-3. Implement a constrained official-source fetcher with SSRF protections, rate limits, robots/policy checks, content snapshots, and freshness tracking.
-4. Add parsing with provenance and user review, then connect normalized evidence to opportunity facts.
+3. Persist source fetch history with content hashes, HTTP metadata, parser versions, and freshness state; add durable rate limiting before broad public use.
+4. Add robust content parsing with provenance and user review, then connect normalized evidence to opportunity facts.
 5. Wire deterministic eligibility and full-cost funding evaluation into opportunity detail and comparison screens.
 6. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.
 7. Add authentication and privacy boundaries before storing personal profile or documents.
