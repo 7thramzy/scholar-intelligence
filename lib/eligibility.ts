@@ -21,6 +21,10 @@ export interface EligibilityEvaluation {
 
 /** Deterministic evaluator. Unknown data never counts as a pass. */
 export function evaluateEligibility(criteria: EligibilityCriterion[]): EligibilityEvaluation {
+  if (criteria.length === 0) {
+    return { status: "uncertain", criteria: [] };
+  }
+
   const evaluated = criteria.map((criterion): EvaluatedCriterion => ({
     ...criterion,
     result: compareCriterion(criterion)
@@ -53,10 +57,10 @@ function compareCriterion(criterion: EligibilityCriterion): CriterionResult {
       }
       return applicantValue === requiredValue ? "pass" : "fail";
     case "min":
-      if (typeof applicantValue !== "number" || typeof requiredValue !== "number") return "unknown";
+      if (typeof applicantValue !== "number" || typeof requiredValue !== "number" || !Number.isFinite(applicantValue) || !Number.isFinite(requiredValue)) return "unknown";
       return applicantValue >= requiredValue ? "pass" : "fail";
     case "max":
-      if (typeof applicantValue !== "number" || typeof requiredValue !== "number") return "unknown";
+      if (typeof applicantValue !== "number" || typeof requiredValue !== "number" || !Number.isFinite(applicantValue) || !Number.isFinite(requiredValue)) return "unknown";
       return applicantValue <= requiredValue ? "pass" : "fail";
     case "one_of":
       if (typeof applicantValue !== "string" || !Array.isArray(requiredValue)) return "unknown";
