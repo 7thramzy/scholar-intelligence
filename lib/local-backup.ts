@@ -1,4 +1,4 @@
-import type { EvidenceSnapshot } from "./evidence";
+import { EVIDENCE_FACT_TYPES, type EvidenceSnapshot } from "./evidence";
 
 export const OPPORTUNITIES_STORAGE_KEY = "scholar-intelligence-opportunities-v1";
 export const EVIDENCE_STORAGE_KEY = "scholar-intelligence-evidence-v1";
@@ -59,7 +59,7 @@ function isEvidence(value: unknown): value is EvidenceSnapshot {
     typeof value.id === "string" && value.id.length > 0 && value.id.length <= 160 &&
     typeof value.opportunityId === "string" && value.opportunityId.length > 0 &&
     typeof value.sourceUrl === "string" && isHttpsUrl(value.sourceUrl) &&
-    typeof value.factType === "string" &&
+    typeof value.factType === "string" && EVIDENCE_FACT_TYPES.includes(value.factType as EvidenceSnapshot["factType"]) &&
     typeof value.excerpt === "string" && value.excerpt.length >= 20 && value.excerpt.length <= 12000 &&
     typeof value.capturedAt === "string" && Number.isFinite(Date.parse(value.capturedAt)) &&
     (value.sourceTrust === "registered-official" || value.sourceTrust === "unverified") &&
@@ -124,7 +124,7 @@ function stableStringify(value: unknown): string {
   if (isRecord(value)) {
     return "{" + Object.keys(value).sort().map((key) => JSON.stringify(key) + ":" + stableStringify(value[key])).join(",") + "}";
   }
-  return JSON.stringify(value);
+  return JSON.stringify(value) ?? "null";
 }
 
 function mergeById<T extends { id: string }>(existing: T[], incoming: T[], label: string): T[] {
