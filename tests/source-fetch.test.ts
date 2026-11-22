@@ -90,7 +90,7 @@ test("fetches an allowed official page and returns a fingerprint", async () => {
 test("rejects redirects from one registered organization to another", async () => {
   const fakeFetch = (async (input: RequestInfo | URL) => {
     if (String(input).endsWith("/robots.txt")) {
-      return new Response("User-agent: *\\nAllow: /", { status: 200, headers: { "content-type": "text/plain" } });
+      return new Response("User-agent: *\nAllow: /", { status: 200, headers: { "content-type": "text/plain" } });
     }
     return new Response(null, { status: 302, headers: { location: "https://stipendiumhungaricum.hu/" } });
   }) as typeof fetch;
