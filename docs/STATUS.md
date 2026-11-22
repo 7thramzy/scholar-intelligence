@@ -21,11 +21,14 @@ Latest merged commit: a0d5b1be131f403b7793203f468b91e3c1967bbe
 
 ## Current limitations
 - Opportunity records are browser-local only and do not sync between devices.
-- The tracker is manual entry; no official source discovery, scraping, parsing, evidence snapshots, freshness checks, or automatic updates yet.
+- Source registry now contains eight curated official scholarship/study portals. Domain matching requires HTTPS and exact host/subdomain matching; lookalike suffix domains are rejected.
+- Evidence workspace captures user-copied excerpts linked to a saved opportunity, classifies source-domain trust, timestamps each record, and stores a SHA-256 fingerprint. Evidence is append-only through the UI and remains browser-local.
+- No automatic page fetching, parsing, source freshness checks, or background updates yet.
 - Funding and eligibility evaluators are tested pure modules but are not yet wired into the opportunity UI.
 - Funding claim is intentionally displayed as an unverified source claim; no manually entered record is automatically confirmed as fully funded.
 - No sign-in, database, AI provider, Gmail/Drive integration, private document storage, or reminders.
 - No browser-based visual QA or real-device responsive testing has been completed.
+- The current evidence fingerprint is a client-side integrity aid, not a digital signature or proof that the excerpt genuinely appeared on the linked page.
 
 ## Integrations
 - Supabase connector currently lists zero projects. Database provisioning remains deliberately deferred until the final phase.
@@ -35,10 +38,11 @@ Latest merged commit: a0d5b1be131f403b7793203f468b91e3c1967bbe
 
 ## Next actions
 1. Verify the latest main-branch Vercel deployment reaches READY and inspect the deployed page.
-2. Add edit/update capability and a safe local export/import for public opportunity metadata.
-3. Build official source registry, evidence capture, immutable snapshots, parser provenance, and freshness tracking.
-4. Wire deterministic eligibility and full-cost funding evaluation into opportunity detail and comparison screens.
-5. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.
-6. Add authentication and privacy boundaries before storing personal profile or documents.
-7. Provision Supabase only as the final infrastructure step, after confirming the organization and that the selected plan/cost is $0; otherwise return for explicit approval.
-8. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
+2. Add edit/update capability and safe local export/import for public opportunity metadata.
+3. Implement a constrained official-source fetcher with SSRF protections, rate limits, robots/policy checks, content snapshots, and freshness tracking.
+4. Add parsing with provenance and user review, then connect normalized evidence to opportunity facts.
+5. Wire deterministic eligibility and full-cost funding evaluation into opportunity detail and comparison screens.
+6. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.
+7. Add authentication and privacy boundaries before storing personal profile or documents.
+8. Provision Supabase only as the final infrastructure step, after confirming the organization and that the selected plan/cost is $0; otherwise return for explicit approval.
+9. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
