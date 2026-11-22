@@ -35,7 +35,7 @@ test("rejects redirects to a non-registered host", async () => {
   }) as typeof fetch;
   await assert.rejects(
     () => fetchOfficialSourcePage("https://www.daad.de/scholarships", fakeFetch),
-    /إعادة التوجيه/
+    (error: unknown) => error instanceof SourceFetchError && error.statusCode === 403
   );
 });
 
@@ -85,4 +85,17 @@ test("fetches an allowed official page and returns a fingerprint", async () => {
   assert.match(snapshot.text, /Scholarship applications open now/);
   assert.equal(snapshot.contentHash.length, 64);
   assert.equal(snapshot.robotsPolicy, "allowed");
+});
+
+test("rejects redirects from one registered organization to another", async () => {
+  const fakeFetch = (async (input: RequestInfo | URL) => {
+    if (String(input).endsWith("/robots.txt")) {
+      return new Response("User-agent: *\\nAllow: /", { status: 200, headers: { "content-type": "text/plain" } });
+    }
+    return new Response(null, { status: 302, headers: { location: "https://stipendiumhungaricum.hu/" } });
+  }) as typeof fetch;
+  await assert.rejects(
+    () => fetchOfficialSourcePage("https://www.daad.de/scholarships", fakeFetch),
+    /نطاق مصدر مختلف/
+  );
 });
