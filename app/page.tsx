@@ -25,7 +25,7 @@ export default function Home() {
         <Link className="brand" href="/" aria-label="Scholar Intelligence الصفحة الرئيسية">
           <span className="brand-mark">S</span>
           <span><strong>Scholar</strong><small>INTELLIGENCE</small></span>
-        </a>
+        </Link>
         <div className="side-label">مساحة العمل</div>
         <nav className="nav-list" aria-label="التنقل الرئيسي">
           <a className="nav-item active" href="#overview"><Icon>⌂</Icon>نظرة عامة</a>
