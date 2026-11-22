@@ -15,6 +15,9 @@
 - **DocumentMetadata**: owner, storage key, type, verification status; never expose private file contents by default.
 - **AuditEvent**: actor, action, target, timestamp, safe metadata.
 
+## Source fetch records
+The source fetch pipeline returns source ID, requested/final URL, retrieval timestamp, HTTP status, content type, extracted title/text, robots-policy result, and SHA-256 of the raw response. Historical persistence, parser versioning, and freshness transitions are not yet implemented.
+
 ## Evidence snapshot integrity
 An evidence snapshot stores the opportunity reference, source URL, fact type, exact normalized excerpt, capture timestamp, source registry match, schema version, and SHA-256 content fingerprint. The fingerprint detects accidental changes to the captured payload; it is not a digital signature and does not prove source authenticity. The current browser-local ledger is append-only through the UI but is not protected against browser storage edits or deletion.
 

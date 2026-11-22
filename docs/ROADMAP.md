@@ -22,7 +22,8 @@
 - Deterministic eligibility and full-funding evaluators with unit tests. (completed; see lib/eligibility.ts and lib/funding.ts)
 - Curated official source registry and strict HTTPS domain classification. (implemented locally; see lib/source-registry.ts)
 - Append-only manual evidence snapshots with SHA-256 fingerprints and source metadata. (implemented locally; see lib/evidence.ts and /evidence)
-- Automated source fetching, parsing, immutable server-side history, and freshness checks. (remaining)
+- Constrained server-side HTML/text fetcher with HTTPS source allowlist, redirect validation, robots.txt checks, timeout and response-size limits. (implemented; persistence and durable throttling remain)
+- Immutable server-side fetch history, parser provenance, and freshness checks. (remaining)
 - Program/scholarship normalization. (remaining)
 - Deterministic eligibility, deadline, and full-funding evaluators.
 - Opportunity search, detail, save, compare.

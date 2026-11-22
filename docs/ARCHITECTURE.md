@@ -12,7 +12,9 @@
 ## Current implementation status
 - Curated source-domain registry exists in `lib/source-registry.ts`.
 - `/evidence` records user-provided excerpts against locally saved opportunities. Records include source URL, fact type, capture time, source-domain classification, schema version, and SHA-256 fingerprint.
-- This first evidence ledger is browser-local and manual. It does not fetch web pages, verify the truth of excerpts, or provide tamper-proof storage. Supabase and server-side snapshots remain deferred.
+- `POST /api/source-fetch` can retrieve HTML/text from the curated registry only, after robots.txt checks and redirect revalidation. It caps response bodies and timeouts, and returns a content hash for review.
+- The fetch endpoint does not persist fetch history. The user manually selects a relevant excerpt before adding it to the local evidence ledger.
+- This first evidence ledger is browser-local and not tamper-proof. Supabase and server-side snapshots remain deferred.
 
 ## Core pipeline
 1. Source registry identifies approved official domains and source types.
