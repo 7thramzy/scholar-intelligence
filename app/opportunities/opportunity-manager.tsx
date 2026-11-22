@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
@@ -33,10 +35,22 @@ const emptyForm = {
 function isSafeOfficialUrl(value: string): boolean {
   try {
     const parsed = new URL(value);
-    return parsed.protocol === "https:";
+    return parsed.protocol === "https:" && !parsed.username && !parsed.password;
   } catch {
     return false;
   }
+}
+
+function isValidOpportunity(value: unknown): value is Opportunity {
+  if (!value || typeof value !== "object") return false;
+  const item = value as Record<string, unknown>;
+  return typeof item.id === "string" &&
+    typeof item.title === "string" &&
+    typeof item.institution === "string" &&
+    typeof item.field === "string" &&
+    typeof item.deadline === "string" &&
+    typeof item.sourceUrl === "string" && isSafeOfficialUrl(item.sourceUrl) &&
+    (item.fundingClaim === "unknown" || item.fundingClaim === "partial" || item.fundingClaim === "claimed");
 }
 
 export default function OpportunityManager() {
@@ -50,7 +64,7 @@ export default function OpportunityManager() {
       const saved = window.localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed: unknown = JSON.parse(saved);
-        if (Array.isArray(parsed)) setItems(parsed as Opportunity[]);
+        if (Array.isArray(parsed)) setItems(parsed.filter(isValidOpportunity));
       }
     } catch {
       setError("تعذر قراءة البيانات المحلية لهذا المتصفح.");
@@ -110,8 +124,8 @@ export default function OpportunityManager() {
   return (
     <main className="workspace-page">
       <header className="workspace-topbar">
-        <a className="workspace-brand" href="/">Scholar <span>INTELLIGENCE</span></a>
-        <a className="back-link" href="/">العودة إلى لوحة التحكم</a>
+        <Link className="workspace-brand" href="/">Scholar <span>INTELLIGENCE</span></Link>
+        <Link className="back-link" href="/">العودة إلى لوحة التحكم</Link>
       </header>
 
       <div className="workspace-content">
