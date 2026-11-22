@@ -27,7 +27,7 @@ jobs:
       - name: Apply non-breaking dependency security fixes
         run: npm audit fix --ignore-scripts
       - name: Commit generated lockfile on implementation branch
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -42,6 +42,8 @@ jobs:
         run: npm audit --audit-level=high
       - name: Lint
         run: npm run lint
+      - name: Unit tests
+        run: npm test
       - name: Typecheck
         run: npm run typecheck
       - name: Production build
