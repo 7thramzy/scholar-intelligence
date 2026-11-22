@@ -5,19 +5,21 @@
 - Confirm branch protection and PR workflow.
 - Select starter only after security and maintenance review. (completed: rejected unsafe template; see docs/STARTER_AUDIT.md)
 
-## Phase 1 — Engineering baseline (partially complete)
+## Phase 1 — Engineering baseline (substantially complete)
 - Import/create Next.js TypeScript app with lockfile.
 - Configure lint, typecheck, CI, and environment placeholder. (completed)
-- Add unit tests, formatting enforcement, and environment validation. (remaining)
+- Add unit tests for deterministic business rules. (completed)
+- Add formatting enforcement and environment validation. (remaining)
 - Establish design tokens, RTL, accessible layout, error handling.
 - Verify production build. (completed in GitHub Actions; Vercel production deployment pending final READY check)
 
-## Phase 2 — Identity and data security
+## Phase 2 — Identity and data security (not started)
 - Supabase project/configuration and migrations.
 - Auth, owner profile, RLS policies, storage boundaries.
 - Automated tests proving cross-user isolation and unauthenticated denial.
 
-## Phase 3 — Opportunity core
+## Phase 3 — Opportunity core (partially started)
+- Deterministic eligibility and full-funding evaluators with unit tests. (completed; see lib/eligibility.ts and lib/funding.ts)
 - Source registry and evidence model.
 - Program/scholarship normalization.
 - Deterministic eligibility, deadline, and full-funding evaluators.
