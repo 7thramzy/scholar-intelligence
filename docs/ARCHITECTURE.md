@@ -9,6 +9,11 @@
 - Exports: generate user-reviewed PDF/DOCX/XLSX reports.
 - PWA/offline: later milestone; never store secrets or OAuth refresh tokens in browser storage.
 
+## Current implementation status
+- Curated source-domain registry exists in `lib/source-registry.ts`.
+- `/evidence` records user-provided excerpts against locally saved opportunities. Records include source URL, fact type, capture time, source-domain classification, schema version, and SHA-256 fingerprint.
+- This first evidence ledger is browser-local and manual. It does not fetch web pages, verify the truth of excerpts, or provide tamper-proof storage. Supabase and server-side snapshots remain deferred.
+
 ## Core pipeline
 1. Source registry identifies approved official domains and source types.
 2. Fetcher retrieves public source material within rate and robots constraints.
