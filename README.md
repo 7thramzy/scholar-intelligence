@@ -1,15 +1,21 @@
 # Scholar Intelligence
 
-Personal-first intelligence workspace for discovering, verifying, comparing, and managing fully funded master's opportunities in AI, Computer Science, and IT.
+Personal-first graduate opportunity workspace.
 
-## Start here
-1. Read [AGENTS.md](AGENTS.md) before making changes.
-2. Read [Project context](PROJECT_CONTEXT.md).
-3. Follow [Agent workflow](docs/AGENT_WORKFLOW.md).
-4. Check [Current status](docs/STATUS.md) and [Roadmap](docs/ROADMAP.md).
+## Development
+- Node.js 20+
+- npm 10+
+- `npm install`
+- `npm run dev`
 
-## Product principles
-- Fully funded means total cost coverage, not tuition waiver alone.
-- Official evidence and deterministic eligibility gates outrank AI-generated interpretations.
-- No email sending, application submission, or external side effect without explicit approval.
-- Personal-first MVP; do not prematurely add multi-tenancy, billing, or enterprise administration.
+## Validation
+- `npm run lint`
+- `npm run typecheck`
+- `npm run build`
+
+## Current milestone
+The initial Arabic RTL owner dashboard is a UI foundation only. It uses no database, authentication provider, or external AI API. Dashboard counters are empty-state placeholders and must not be interpreted as live records.
+
+Supabase provisioning and data integration are intentionally deferred to the final phase, after the application has a verified build and Vercel preview.
+
+Read `AGENTS.md` and `docs/STATUS.md` before contributing.
