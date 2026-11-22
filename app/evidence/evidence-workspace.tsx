@@ -60,6 +60,8 @@ export default function EvidenceWorkspace() {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [fetchingPage, setFetchingPage] = useState(false);
+  const [pagePreview, setPagePreview] = useState<{ title: string | null; text: string; contentHash: string; finalUrl: string } | null>(null);
 
   useEffect(() => {
     try {
@@ -92,6 +94,40 @@ export default function EvidenceWorkspace() {
     setSelectedId(id);
     const found = opportunities.find((item) => item.id === id);
     if (found) setSourceUrl(found.sourceUrl);
+  }
+
+  async function fetchSourcePage() {
+    setError("");
+    setFetchingPage(true);
+    setPagePreview(null);
+    try {
+      const response = await fetch("/api/source-fetch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: sourceUrl })
+      });
+      const result: unknown = await response.json();
+      if (!response.ok) {
+        const message = result && typeof result === "object" && "error" in result && typeof result.error === "string"
+          ? result.error : "تعذر جلب الصفحة الرسمية.";
+        throw new Error(message);
+      }
+      if (!result || typeof result !== "object" || !("text" in result) || typeof result.text !== "string" ||
+          !("contentHash" in result) || typeof result.contentHash !== "string" ||
+          !("finalUrl" in result) || typeof result.finalUrl !== "string") {
+        throw new Error("استجابة المصدر غير مكتملة.");
+      }
+      setPagePreview({
+        title: "title" in result && typeof result.title === "string" ? result.title : null,
+        text: result.text,
+        contentHash: result.contentHash,
+        finalUrl: result.finalUrl
+      });
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "تعذر جلب الصفحة الرسمية.");
+    } finally {
+      setFetchingPage(false);
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -156,7 +192,9 @@ export default function EvidenceWorkspace() {
             ) : (
               <form className="opportunity-form" onSubmit={handleSubmit}>
                 <label>الفرصة المرتبطة<select value={selectedId} onChange={(event) => chooseOpportunity(event.target.value)}>{opportunities.map((item) => <option key={item.id} value={item.id}>{item.title} — {item.institution}</option>)}</select></label>
-                <label>رابط الصفحة الرسمية<input type="url" value={sourceUrl} onChange={(event) => setSourceUrl(event.target.value)} required /></label>
+                <label>رابط الصفحة الرسمية<input type="url" value={sourceUrl} onChange={(event) => { setSourceUrl(event.target.value); setPagePreview(null); }} required /></label>
+                <button className="fetch-source-button" type="button" onClick={fetchSourcePage} disabled={fetchingPage}>{fetchingPage ? "جارٍ جلب الصفحة وفحص سياسة الموقع…" : "جلب الصفحة من المصدر الرسمي"}</button>
+                {pagePreview && <div className="source-page-preview"><div className="source-preview-heading"><strong>{pagePreview.title ?? "نص الصفحة"}</strong><span>تم الجلب مع احترام robots.txt</span></div><a href={pagePreview.finalUrl} target="_blank" rel="noopener noreferrer">{pagePreview.finalUrl}</a><pre>{pagePreview.text}</pre><div className="source-preview-hash">SHA-256: {pagePreview.contentHash}</div><p>انسخ فقط الفقرة التي تثبت المعلومة المطلوبة والصقها في حقل المقتطف أدناه.</p></div>}
                 <label>نوع المعلومة<select value={factType} onChange={(event) => setFactType(event.target.value as EvidenceFactType)}>{EVIDENCE_FACT_TYPES.map((type) => <option key={type} value={type}>{FACT_LABELS[type]}</option>)}</select></label>
                 <label>المقتطف النصي من المصدر<textarea value={excerpt} onChange={(event) => setExcerpt(event.target.value)} rows={6} minLength={20} maxLength={12000} placeholder="الصق النص الذي يثبت الموعد أو شرط الأهلية أو عنصر التمويل…" required /></label>
                 <p className="evidence-hint">يجب أن يكون الرابط على نطاق مدرج في السجل الرسمي. المقتطف يُحفظ كما أدخلته بعد تطبيع المسافات.</p>
