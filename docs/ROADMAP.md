@@ -1,15 +1,16 @@
 # Roadmap
 
-## Phase 0 — Foundation (current)
+## Phase 0 — Foundation (complete)
 - Repository instructions, product context, architecture, security, decisions, domain model, roadmap, status.
 - Confirm branch protection and PR workflow.
-- Select starter only after security and maintenance review.
+- Select starter only after security and maintenance review. (completed: rejected unsafe template; see docs/STARTER_AUDIT.md)
 
-## Phase 1 — Engineering baseline
+## Phase 1 — Engineering baseline (partially complete)
 - Import/create Next.js TypeScript app with lockfile.
-- Configure lint, typecheck, unit tests, CI, formatting, environment validation.
+- Configure lint, typecheck, CI, and environment placeholder. (completed)
+- Add unit tests, formatting enforcement, and environment validation. (remaining)
 - Establish design tokens, RTL, accessible layout, error handling.
-- Verify production build.
+- Verify production build. (completed in GitHub Actions; Vercel production deployment pending final READY check)
 
 ## Phase 2 — Identity and data security
 - Supabase project/configuration and migrations.
