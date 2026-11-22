@@ -31,3 +31,9 @@ This commit is intended to add AGENTS.md, PROJECT_CONTEXT.md, README.md, and doc
 
 ## Handoff
 Read AGENTS.md first. Verify branch contents and commit status before claiming docs are merged. Do not start feature development until starter strategy and security baseline are explicit.
+
+## Integration discovery — 2026-11-23
+- Supabase connector currently lists zero projects. One organization is visible: `r7-yn1's Org` (ID: `vcdsonewqpgngpdvohvs`). Project creation has not been attempted because the user must choose/confirm the organization and any non-zero cost before provisioning.
+- Vercel connector shows the Hobby team `ramzys-projects-90515bbd`; no project linked to `7thramzy/scholar-intelligence` was present in the returned Git-linked project list.
+- No Supabase credentials or project URL are available for this repository.
+- Do not deploy an empty docs-only repository or create paid resources without explicit cost approval.
