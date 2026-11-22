@@ -12,6 +12,12 @@
 - Request minimum OAuth scopes; explain each scope and allow revocation.
 - Do not persist access/refresh tokens in localStorage, IndexedDB, or client state.
 
+## Local backup import/export
+- Export only public opportunity metadata and evidence excerpts; do not include applicant profiles, private documents, OAuth tokens, or API keys.
+- Cap imported files and record counts, validate every field and URL, and reject malformed references.
+- Merge records without overwriting existing IDs; stop on conflicting IDs.
+- Recompute evidence fingerprints before restore. Treat the fingerprint as integrity checking, not authenticity proof.
+
 ## Personal documents
 - Private buckets, short-lived signed URLs, strict ownership checks.
 - Collect only what is needed. Provide deletion/export paths.
