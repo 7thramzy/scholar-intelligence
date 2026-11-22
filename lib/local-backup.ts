@@ -105,8 +105,8 @@ export function validateLocalBackup(value: unknown): BackupValidation {
     backup: {
       schemaVersion: 1,
       exportedAt: value.exportedAt as string,
-      opportunities: validOpportunities,
-      evidence: validEvidence
+      opportunities: validOpportunities.map((item) => ({ ...item })),
+      evidence: validEvidence.map((item) => ({ ...item }))
     }
   };
 }
