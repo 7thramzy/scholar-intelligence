@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const metrics = [
   { label: "الفرص المحفوظة", value: "٠", note: "ابدأ ببناء قائمتك" },
   { label: "تحتاج إلى التحقق", value: "٠", note: "لا توجد بيانات مستوردة" },
@@ -20,7 +22,7 @@ export default function Home() {
   return (
     <main className="app-shell">
       <aside className="sidebar">
-        <a className="brand" href="/" aria-label="Scholar Intelligence الصفحة الرئيسية">
+        <Link className="brand" href="/" aria-label="Scholar Intelligence الصفحة الرئيسية">
           <span className="brand-mark">S</span>
           <span><strong>Scholar</strong><small>INTELLIGENCE</small></span>
         </a>
