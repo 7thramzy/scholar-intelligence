@@ -2,7 +2,7 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest merged commit: a0d5b1be131f403b7793203f468b91e3c1967bbe
+Latest merged commit: a0cbf90f79985839316cb60a11243a311365afe1
 
 ## Completed
 - Agent instructions, project context, architecture, security, decisions, domain model, roadmap, and handoff docs merged.
@@ -16,8 +16,8 @@ Latest merged commit: a0d5b1be131f403b7793203f468b91e3c1967bbe
 - Unit tests cover the core funding and eligibility rules.
 - npm package-lock.json committed and reproducible npm ci configured.
 - Dependency audit reported zero vulnerabilities in successful CI runs.
-- GitHub Actions run 30 passed: npm ci, npm audit, lint, unit tests, typecheck, and production build.
-- Vercel project linked to 7thramzy/scholar-intelligence. Production deployment from main commit 44b4c0fae1fbe51d06b995f6e8f4265141372d6c reached READY. The latest opportunity-tracker merge is awaiting its own production deployment check.
+- GitHub Actions run 35 passed: npm ci, npm audit, lint, unit tests (27 total), typecheck, and production build.
+- Vercel project linked to 7thramzy/scholar-intelligence. Production deployment for main commit a0cbf90f79985839316cb60a11243a311365afe1 reached READY at https://scholar-intelligence.vercel.app.
 
 ## Current limitations
 - Opportunity records are browser-local only and do not sync between devices.
@@ -40,9 +40,8 @@ Latest merged commit: a0d5b1be131f403b7793203f468b91e3c1967bbe
 - No secrets or personal application documents are stored in the repository.
 
 ## Next actions
-1. Verify the latest main-branch Vercel deployment reaches READY and inspect the deployed page.
-2. Add edit/update capability and safe local export/import for public opportunity metadata.
-3. Persist source fetch history with content hashes, HTTP metadata, parser versions, and freshness state; add durable rate limiting before broad public use.
+1. Add edit/update capability and safe local export/import for public opportunity and evidence metadata.
+2. Persist source fetch history with content hashes, HTTP metadata, parser versions, and freshness state; add durable rate limiting before broad public use.
 4. Add robust content parsing with provenance and user review, then connect normalized evidence to opportunity facts.
 5. Wire deterministic eligibility and full-cost funding evaluation into opportunity detail and comparison screens.
 6. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.
