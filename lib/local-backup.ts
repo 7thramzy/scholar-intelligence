@@ -1,4 +1,5 @@
-import { EVIDENCE_FACT_TYPES, type EvidenceSnapshot } from "./evidence";
+import { createEvidenceSnapshot, EVIDENCE_FACT_TYPES, type EvidenceSnapshot } from "./evidence";
+import { classifySourceUrl } from "./source-registry";
 
 export const OPPORTUNITIES_STORAGE_KEY = "scholar-intelligence-opportunities-v1";
 export const EVIDENCE_STORAGE_KEY = "scholar-intelligence-evidence-v1";
@@ -64,6 +65,8 @@ function isEvidence(value: unknown): value is EvidenceSnapshot {
     typeof value.capturedAt === "string" && Number.isFinite(Date.parse(value.capturedAt)) &&
     (value.sourceTrust === "registered-official" || value.sourceTrust === "unverified") &&
     (value.sourceName === null || typeof value.sourceName === "string") &&
+    value.sourceTrust === classifySourceUrl(value.sourceUrl).trust &&
+    value.sourceName === (classifySourceUrl(value.sourceUrl).matchedSource?.name ?? null) &&
     typeof value.contentHash === "string" && /^[a-f0-9]{64}$/i.test(value.contentHash);
 }
 
@@ -165,4 +168,26 @@ export function createLocalBackup(opportunities: BackupOpportunity[], evidence: 
     throw new Error(validation.errors.join(" "));
   }
   return validation.backup;
+}
+
+export async function verifyLocalBackupEvidence(backup: LocalBackup): Promise<void> {
+  for (const item of backup.evidence) {
+    const expected = await createEvidenceSnapshot(
+      {
+        opportunityId: item.opportunityId,
+        sourceUrl: item.sourceUrl,
+        factType: item.factType,
+        excerpt: item.excerpt
+      },
+      { id: item.id, capturedAt: item.capturedAt }
+    );
+    if (
+      expected.contentHash !== item.contentHash ||
+      expected.sourceTrust !== item.sourceTrust ||
+      expected.sourceName !== item.sourceName ||
+      expected.excerpt !== item.excerpt
+    ) {
+      throw new Error("فشل التحقق من بصمة أحد الأدلة؛ لم يتم استيراد النسخة.");
+    }
+  }
 }
