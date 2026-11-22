@@ -97,7 +97,7 @@ export function classifySourceUrl(value: string): SourceClassification {
     return { trust: "unverified", matchedSource: null, hostname: parsed.hostname || null };
   }
 
-  const hostname = parsed.hostname.toLowerCase().replace(/\\.$/, "");
+  const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
   const matchedSource = OFFICIAL_SOURCES.find((source) =>
     source.domains.some((domain) => hostname === domain || hostname.endsWith(`.${domain}`))
   ) ?? null;
