@@ -32,7 +32,7 @@ export interface EvidenceSnapshot extends EvidenceDraft {
 }
 
 export function normalizeEvidenceExcerpt(value: string): string {
-  return value.replace(/\\r\\n?/g, "\\n").replace(/[ \\t]+/g, " ").trim();
+  return value.replace(/\r\n?/g, "\n").replace(/[ \t]+/g, " ").trim();
 }
 
 export function validateEvidenceDraft(draft: EvidenceDraft): string | null {
