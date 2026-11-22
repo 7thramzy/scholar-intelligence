@@ -11,6 +11,8 @@ Latest merged commit: a0cbf90f79985839316cb60a11243a311365afe1
 - Arabic RTL responsive owner dashboard and local opportunity tracker route.
 - Opportunity tracker supports add/remove, institution, field, deadline, official HTTPS source URL, and preliminary funding claim.
 - Opportunity metadata is saved only in this browser's localStorage; stored records are validated before rendering. No applicant profile, documents, credentials, or secrets are stored there.
+- Opportunity records can now be edited. Deletion is blocked when evidence records still reference the opportunity, preserving evidence links.
+- Local backup export/import includes opportunities and evidence, enforces a 5 MB file cap and schema/record limits, merges by ID without overwriting, rejects conflicting IDs, and recomputes SHA-256 evidence fingerprints before restore.
 - Deterministic funding evaluator covers tuition, living, housing, insurance, travel, visa, and mandatory fees; missing/unverified cost evidence prevents a full-funding result.
 - Deterministic eligibility evaluator supports hard/soft criteria and explicit unknown state; empty criteria and non-finite numbers cannot produce an eligible result.
 - Unit tests cover the core funding and eligibility rules.
@@ -40,8 +42,7 @@ Latest merged commit: a0cbf90f79985839316cb60a11243a311365afe1
 - No secrets or personal application documents are stored in the repository.
 
 ## Next actions
-1. Add edit/update capability and safe local export/import for public opportunity and evidence metadata.
-2. Persist source fetch history with content hashes, HTTP metadata, parser versions, and freshness state; add durable rate limiting before broad public use.
+1. Persist source fetch history with content hashes, HTTP metadata, parser versions, and freshness state; add durable rate limiting before broad public use.
 4. Add robust content parsing with provenance and user review, then connect normalized evidence to opportunity facts.
 5. Wire deterministic eligibility and full-cost funding evaluation into opportunity detail and comparison screens.
 6. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.

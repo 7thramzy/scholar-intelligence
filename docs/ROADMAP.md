@@ -26,7 +26,8 @@
 - Immutable server-side fetch history, parser provenance, and freshness checks. (remaining)
 - Program/scholarship normalization. (remaining)
 - Deterministic eligibility, deadline, and full-funding evaluators.
-- Opportunity search, detail, save, compare.
+- Opportunity add/edit/save and safe local export/import with integrity verification. (implemented)
+- Opportunity search, detail, save, compare. (remaining)
 
 ## Phase 4 — Personal workflow
 - Applicant profile and preferences with user confirmation.

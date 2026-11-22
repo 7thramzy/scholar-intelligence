@@ -15,6 +15,9 @@
 - **DocumentMetadata**: owner, storage key, type, verification status; never expose private file contents by default.
 - **AuditEvent**: actor, action, target, timestamp, safe metadata.
 
+## Local backup format
+Version 1 backup bundles public opportunity metadata and evidence snapshots. Import validates schema and references, merges by stable IDs, rejects conflicting IDs, and verifies evidence fingerprints before writing. This is a portability mechanism for local browser data, not a server backup.
+
 ## Source fetch records
 The source fetch pipeline returns source ID, requested/final URL, retrieval timestamp, HTTP status, content type, extracted title/text, robots-policy result, and SHA-256 of the raw response. Historical persistence, parser versioning, and freshness transitions are not yet implemented.
 
