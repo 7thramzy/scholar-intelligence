@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { extractPageText, fetchOfficialSourcePage, isAllowedByRobots, parseRobotsRules, SourceFetchError } from "../lib/source-fetch";
 
 test("parses wildcard and named robots groups", () => {
-  const rules = parseRobotsRules("User-agent: *\\nDisallow: /private\\nAllow: /private/public\\n\\nUser-agent: OtherBot\\nDisallow: /");
+  const rules = parseRobotsRules("User-agent: *\nDisallow: /private\nAllow: /private/public\n\nUser-agent: OtherBot\nDisallow: /");
   assert.equal(isAllowedByRobots("/private/secret", rules), false);
   assert.equal(isAllowedByRobots("/private/public/info", rules), true);
   assert.equal(isAllowedByRobots("/open", rules), true);
@@ -26,13 +26,26 @@ test("rejects sources outside the official registry before making requests", asy
   assert.equal(called, false);
 });
 
+test("rejects redirects to a non-registered host", async () => {
+  const fakeFetch = (async (input: RequestInfo | URL) => {
+    if (String(input).endsWith("/robots.txt")) {
+      return new Response("User-agent: *\nAllow: /", { status: 200, headers: { "content-type": "text/plain" } });
+    }
+    return new Response(null, { status: 302, headers: { location: "https://attacker.example/collect" } });
+  }) as typeof fetch;
+  await assert.rejects(
+    () => fetchOfficialSourcePage("https://www.daad.de/scholarships", fakeFetch),
+    /إعادة التوجيه/
+  );
+});
+
 test("respects robots denial and does not fetch the page", async () => {
   const calls: string[] = [];
   const fakeFetch = (async (input: RequestInfo | URL) => {
     const url = String(input);
     calls.push(url);
     if (url.endsWith("/robots.txt")) {
-      return new Response("User-agent: *\\nDisallow: /en/studying-in-germany/scholarships/", {
+      return new Response("User-agent: *\nDisallow: /en/studying-in-germany/scholarships/", {
         status: 200,
         headers: { "content-type": "text/plain" }
       });
@@ -54,7 +67,7 @@ test("fetches an allowed official page and returns a fingerprint", async () => {
   const fakeFetch = (async (input: RequestInfo | URL) => {
     const url = String(input);
     if (url.endsWith("/robots.txt")) {
-      return new Response("User-agent: *\\nAllow: /", { status: 200, headers: { "content-type": "text/plain" } });
+      return new Response("User-agent: *\nAllow: /", { status: 200, headers: { "content-type": "text/plain" } });
     }
     return new Response("<html><head><title>DAAD</title></head><body><p>Scholarship applications open now.</p></body></html>", {
       status: 200,
