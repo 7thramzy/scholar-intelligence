@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
-import { createLocalBackup, mergeLocalBackup, MAX_BACKUP_BYTES, OPPORTUNITIES_STORAGE_KEY, EVIDENCE_STORAGE_KEY, parseLocalBackupJson, type BackupOpportunity } from "@/lib/local-backup";
+import { createLocalBackup, mergeLocalBackup, MAX_BACKUP_BYTES, OPPORTUNITIES_STORAGE_KEY, EVIDENCE_STORAGE_KEY, parseLocalBackupJson, verifyLocalBackupEvidence, type BackupOpportunity } from "@/lib/local-backup";
 import type { EvidenceSnapshot } from "@/lib/evidence";
 
 type FundingClaim = "unknown" | "partial" | "claimed";
@@ -145,11 +145,23 @@ export default function OpportunityManager() {
   }
 
   function removeOpportunity(id: string) {
+    try {
+      const rawEvidence = localStorage.getItem(EVIDENCE_STORAGE_KEY);
+      const parsed: unknown = rawEvidence ? JSON.parse(rawEvidence) : [];
+      if (!Array.isArray(parsed)) throw new Error("تعذر التحقق من سجل الأدلة؛ لم يتم حذف الفرصة.");
+      if (parsed.some((item) => item && typeof item === "object" && "opportunityId" in item && item.opportunityId === id)) {
+        setError("لا يمكن حذف هذه الفرصة لأنها مرتبطة بأدلة محفوظة. احتفظ بسجلها أو صدّر نسخة احتياطية أولاً.");
+        return;
+      }
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "تعذر حذف الفرصة.");
+      return;
+    }
     setItems((current) => current.filter((item) => item.id !== id));
     if (editingId === id) cancelEditing();
   }
 
-  function exportBackup() {
+  async function exportBackup() {
     setError("");
     setBackupMessage("");
     try {
@@ -157,6 +169,7 @@ export default function OpportunityManager() {
       const parsedEvidence: unknown = rawEvidence ? JSON.parse(rawEvidence) : [];
       if (!Array.isArray(parsedEvidence)) throw new Error("سجل الأدلة المحلي غير صالح؛ لم يتم إنشاء النسخة.");
       const backup = createLocalBackup(items as BackupOpportunity[], parsedEvidence as EvidenceSnapshot[]);
+      await verifyLocalBackupEvidence(backup);
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json;charset=utf-8" });
       const objectUrl = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
@@ -189,6 +202,7 @@ export default function OpportunityManager() {
         setError(validation.errors.join(" "));
         return;
       }
+      await verifyLocalBackupEvidence(validation.backup);
       const parsedEvidence: unknown = oldEvidence ? JSON.parse(oldEvidence) : [];
       if (!Array.isArray(parsedEvidence)) throw new Error("سجل الأدلة الحالي غير صالح؛ أوقفنا الاستيراد.");
       const merged = mergeLocalBackup(
