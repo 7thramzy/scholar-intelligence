@@ -24,6 +24,8 @@ jobs:
           node-version: 20
       - name: Generate lockfile if missing
         run: npm install --package-lock-only --ignore-scripts
+      - name: Apply non-breaking dependency security fixes
+        run: npm audit fix --ignore-scripts
       - name: Commit generated lockfile on implementation branch
         if: github.event_name == 'push'
         run: |
