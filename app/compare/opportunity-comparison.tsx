@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { classifySourceUrl } from "@/lib/source-registry";
 
 type Opportunity = {
@@ -50,6 +50,10 @@ export default function OpportunityComparison() {
       setOpportunities(validOpportunities);
       setEvidence(Array.isArray(rawEvidence) ? rawEvidence as Evidence[] : []);
       setHistory(Array.isArray(rawHistory) ? rawHistory as FetchHistory[] : []);
+    } catch {
+      setOpportunities([]);
+      setEvidence([]);
+      setHistory([]);
     } finally {
       setLoaded(true);
     }
@@ -84,7 +88,7 @@ export default function OpportunityComparison() {
     return history.filter((item) => item.opportunityId === id).sort((a, b) => b.fetchedAt.localeCompare(a.fetchedAt))[0] ?? null;
   }
 
-  function cellValue(item: Opportunity, key: string): React.ReactNode {
+  function cellValue(item: Opportunity, key: string): ReactNode {
     if (key === "institution") return item.institution;
     if (key === "field") return item.field || "غير محدد";
     if (key === "deadline") return item.deadline || "غير محدد";
