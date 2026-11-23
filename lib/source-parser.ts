@@ -51,7 +51,7 @@ const SOURCE_SPECIFIC_RULES: Record<string, Array<{ factType: EvidenceFactType; 
   "erasmus-mundus": [
     { factType: "tuition", label: "Erasmus participation costs", pattern: /participation costs|participation fee/i, confidence: "high" },
     { factType: "stipend", label: "Erasmus scholarship amount", pattern: /scholarship amount|individual support/i, confidence: "medium" },
-    { factType: "travel", label: "Erasmus travel contribution", pattern: /travel contribution|travel costs/i, confidence: "high" }
+    { factType: "travel", label: "Erasmus travel contribution", pattern: /travel contribution|travel costs|contribute to travel/i, confidence: "high" }
   ],
   "study-in-japan": [
     { factType: "travel", label: "MEXT airfare", pattern: /round-trip airfare|air ticket to japan/i, confidence: "high" },
