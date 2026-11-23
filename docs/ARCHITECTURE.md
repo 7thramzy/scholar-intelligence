@@ -18,6 +18,7 @@
 - Fetch history is included in local backup export/import. It is not stored server-side and there is no scheduled refresh. The user manually selects a relevant excerpt before adding it to the evidence ledger.
 - `/evaluation` consumes the deterministic evaluators. Funding evidence is mapped by cost category and requires an explicit user review before being treated as verified. Eligibility rules must reference a saved evidence snapshot.
 - Applicant values and evaluation inputs are session-only; they are not written to browser storage. Funding totals are total-program amounts, and mixed currencies are rejected.
+- `/compare` renders a side-by-side matrix for up to four saved opportunities, using only stored fields and evidence/fetch-history counts. It deliberately avoids automatic ranking while funding/eligibility data is incomplete.
 - This first evidence ledger is browser-local and not tamper-proof. Supabase and server-side snapshots remain deferred.
 
 ## Core pipeline
