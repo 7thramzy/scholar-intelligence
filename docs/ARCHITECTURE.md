@@ -44,3 +44,11 @@ Do not create every table up front. Add schema with the workflow that needs it a
 
 ## Deployment
 Target Vercel for the web app and Supabase for managed backend. Choose regions based on actual latency, data residency, and free-tier constraints; verify current limits before committing to a design.
+
+
+## Source extraction and normalization
+lib/source-parser.ts implements a deterministic, versioned extraction layer over text already fetched by the constrained official-source fetcher. Shared labelled patterns are combined with source-specific rule profiles keyed by the curated source ID. It extracts review candidates only; it does not create EvidenceItems, update opportunity facts, calculate eligibility, or confirm funding.
+
+Candidate records retain factType, exact excerpt, rawValue, optional normalizedValue, confidence hint, reviewStatus=needs-review, and parserVersion. Only unambiguous ISO or month-name dates and amounts with explicit supported currency codes/symbols are normalized. Ambiguous numeric dates and currency-less amounts remain unnormalized. The evidence UI requires an explicit user selection and a separate save action before a candidate becomes an evidence snapshot.
+
+The current parser is a conservative heuristic, not a general-purpose document understanding system. It can miss facts in tables, PDFs, scripts, image-only pages, and unusual layouts; it may surface false positives. Candidate absence is not evidence of absence. Parser version and source excerpt must remain attached to every reviewable candidate.
