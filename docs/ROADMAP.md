@@ -29,7 +29,8 @@
 - Deterministic eligibility and total-cost funding evaluators with UI wiring and evidence review gates. (implemented)
 - Deadline state evaluator and program/scholarship normalization. (remaining)
 - Opportunity add/edit/save and safe local export/import with integrity verification. (implemented)
-- Opportunity search, detail, save, compare. (remaining)
+- Side-by-side comparison of up to four opportunities with evidence and source freshness metadata. (implemented)
+- Automated opportunity search/discovery, detailed opportunity records, and persisted comparisons. (remaining)
 
 ## Phase 4 — Personal workflow
 - Applicant profile and preferences with user confirmation.
