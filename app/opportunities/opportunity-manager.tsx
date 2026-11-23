@@ -174,7 +174,9 @@ export default function OpportunityManager() {
       const parsedEvidence: unknown = rawEvidence ? JSON.parse(rawEvidence) : [];
       const parsedHistory: unknown = rawHistory ? JSON.parse(rawHistory) : [];
       if (!Array.isArray(parsedEvidence) || !Array.isArray(parsedHistory)) throw new Error("سجل الأدلة أو الجلب المحلي غير صالح؛ لم يتم إنشاء النسخة.");
-      const backup = createLocalBackup(items as BackupOpportunity[], parsedEvidence as EvidenceSnapshot[], new Date().toISOString(), parsedHistory.filter(isSourceFetchHistoryRecord));
+      const validHistory = parsedHistory.filter(isSourceFetchHistoryRecord);
+      if (validHistory.length !== parsedHistory.length) throw new Error("سجل الجلب يحتوي على سجلات غير صالحة؛ لم يتم تصدير نسخة ناقصة.");
+      const backup = createLocalBackup(items as BackupOpportunity[], parsedEvidence as EvidenceSnapshot[], new Date().toISOString(), validHistory);
       await verifyLocalBackupEvidence(backup);
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json;charset=utf-8" });
       const objectUrl = URL.createObjectURL(blob);
@@ -183,7 +185,7 @@ export default function OpportunityManager() {
       anchor.download = `scholar-intelligence-backup-${new Date().toISOString().slice(0, 10)}.json`;
       anchor.click();
       URL.revokeObjectURL(objectUrl);
-      setBackupMessage("تم تجهيز نسخة احتياطية من الفرص والأدلة المحلية.");
+      setBackupMessage("تم تجهيز نسخة احتياطية من الفرص والأدلة وتاريخ جلب المصادر.");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "تعذر تصدير النسخة الاحتياطية.");
     }
@@ -213,11 +215,13 @@ export default function OpportunityManager() {
       const parsedEvidence: unknown = oldEvidence ? JSON.parse(oldEvidence) : [];
       const parsedHistory: unknown = oldHistory ? JSON.parse(oldHistory) : [];
       if (!Array.isArray(parsedEvidence) || !Array.isArray(parsedHistory)) throw new Error("سجل الأدلة أو الجلب الحالي غير صالح؛ أوقفنا الاستيراد.");
+      const validHistory = parsedHistory.filter(isSourceFetchHistoryRecord);
+      if (validHistory.length !== parsedHistory.length) throw new Error("سجل الجلب الحالي يحتوي على سجلات غير صالحة؛ أوقفنا الاستيراد.");
       const merged = mergeLocalBackup(
         items as BackupOpportunity[],
         parsedEvidence as EvidenceSnapshot[],
         validation.backup,
-        parsedHistory.filter(isSourceFetchHistoryRecord)
+        validHistory
       );
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(merged.opportunities));
