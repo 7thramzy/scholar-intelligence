@@ -298,3 +298,37 @@ a{color:inherit;text-decoration:none}
 .raw-source-text{margin:12px 0;font-size:12px}
 .raw-source-text summary{cursor:pointer;color:var(--muted,#64748b)}
 .raw-source-text pre{max-height:260px;overflow:auto;white-space:pre-wrap;line-height:1.7;padding:12px;background:var(--surface-muted,#f8fafc);border-radius:8px}
+
+
+.discovery-controls, .discovery-results, .discovery-save-panel {
+  background: var(--panel, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 18px;
+  padding: 22px;
+  margin: 22px 0;
+}
+.discovery-controls .list-panel-heading, .discovery-results .list-panel-heading,
+.discovery-save-panel .list-panel-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; }
+.discovery-source-button {
+  border:1px solid var(--border, #d1d5db); border-radius:10px; padding:9px 12px;
+  background:transparent; color:inherit; cursor:pointer; font:inherit;
+}
+.discovery-source-button:disabled { opacity:.5; cursor:not-allowed; }
+.discovery-progress { margin:12px 0 18px; }
+.discovery-progress > div { display:flex; justify-content:space-between; gap:12px; font-size:13px; margin-bottom:8px; }
+.discovery-progress progress { width:100%; height:8px; }
+.discovery-link-list { display:grid; gap:12px; }
+.discovery-link-card {
+  display:flex; justify-content:space-between; align-items:center; gap:18px;
+  border:1px solid var(--border, #e5e7eb); border-radius:12px; padding:15px;
+}
+.discovery-link-card > div { min-width:0; display:grid; gap:6px; }
+.discovery-link-card strong { line-height:1.5; }
+.discovery-link-card small { opacity:.7; }
+.discovery-link-card a { overflow-wrap:anywhere; font-size:12px; }
+.discovery-link-card .use-extracted-fact { flex-shrink:0; }
+@media (max-width: 640px) {
+  .discovery-controls, .discovery-results, .discovery-save-panel { padding:14px; }
+  .discovery-controls .list-panel-heading, .discovery-results .list-panel-heading { align-items:flex-start; flex-direction:column; }
+  .discovery-link-card { align-items:flex-start; flex-direction:column; }
+}
