@@ -40,9 +40,14 @@ export function normalizeEvidenceExcerpt(value: string): string {
 
 export function validateEvidenceDraft(draft: EvidenceDraft): string | null {
   if (!draft.opportunityId.trim()) return "اختر فرصة مرتبطة بالدليل.";
-  const source = classifySourceUrl(draft.sourceUrl.trim());
-  if (!source.hostname || source.trust !== "registered-official") {
-    return "مصدر الدليل غير موجود في سجل المصادر الرسمية المعتمد.";
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(draft.sourceUrl.trim());
+  } catch {
+    return "رابط المصدر غير صالح.";
+  }
+  if (parsedUrl.protocol !== "https:" || parsedUrl.username || parsedUrl.password) {
+    return "يجب أن يكون رابط المصدر HTTPS دون بيانات دخول مضمّنة.";
   }
   if (!EVIDENCE_FACT_TYPES.includes(draft.factType)) return "نوع الدليل غير صالح.";
   const excerpt = normalizeEvidenceExcerpt(draft.excerpt);
