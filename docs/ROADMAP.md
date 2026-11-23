@@ -59,9 +59,9 @@ Each phase requires acceptance criteria and verified tests before moving on. Reo
 - Remaining: broaden official-source fixtures, improve multilingual layouts, add parser regression fixtures from reviewed real pages, and evaluate extraction precision before claiming production coverage.
 
 
-### Parser QA and normalization (feature branch: test/official-source-parser-fixtures)
-- Added short, reviewed official-page regression excerpts for all eight curated source IDs.
-- Expanded source-specific patterns for MEXT stipend/age eligibility, Chevening post-degree work-experience wording, DAAD scholarship-payment wording, and Campus France grant components.
-- Added explicit JPY and currency-word parsing, typed currency ranges, and validation for malformed amounts and reversed ranges.
-- UI renders a range as a range; no midpoint or single-value estimate is inferred.
-- Remaining: run CI, review failures, merge only on green CI, and continue collecting page-layout fixtures (tables, PDFs, multilingual pages) before claiming broad recall.
+### Parser QA and normalization (merged in PR #17)
+- Regression fixtures cover the eight curated official source IDs.
+- Source-specific extraction covers MEXT stipend/age eligibility, Chevening post-degree work experience, DAAD monthly scholarship payments, Campus France grant components, and Erasmus travel contributions.
+- Explicit JPY/currency-word parsing and typed money ranges are implemented; malformed amounts and reversed ranges are rejected.
+- The review UI renders ranges without inferring a midpoint or single amount.
+- Remaining: expand table, PDF, and multilingual fixtures and measure recall/precision on complete official pages before claiming broad coverage.
