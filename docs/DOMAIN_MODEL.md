@@ -39,3 +39,9 @@ Unknown is not equivalent to eligible, fully funded, or open.
 
 ## Integrity
 Every normalized claim links to one or more evidence items. Preserve history when a source changes; do not silently rewrite previously observed evidence.
+
+
+## Extracted fact candidates
+An extracted candidate is a parser suggestion, not an approved domain fact. It contains source identity and fetched page provenance at the response boundary (source ID/name, requested/final URL, fetched timestamp, HTTP status, content type, content hash); fact type, exact source excerpt, raw value, and optional typed normalization (date or explicit-currency amount); parser version, confidence hint, and needs-review status.
+
+Candidates are ephemeral in the current browser workflow. They are not added to the append-only evidence ledger until the owner selects the excerpt and explicitly saves it. The parser never upgrades source trust, verifies a claim, or decides eligibility/funding. Preserve the raw excerpt even when a normalized value is available.
