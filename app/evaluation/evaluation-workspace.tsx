@@ -342,7 +342,7 @@ export default function EvaluationWorkspace() {
                       <article className="criterion-card" key={item.id}>
                         <div className="criterion-card-head"><strong>{item.label}</strong><button type="button" onClick={() => removeCriterion(item.id)}>إزالة</button></div>
                         <p>{item.hard ? "شرط إلزامي" : "تفضيل غير إلزامي"} · {item.comparator === "min" ? "الحد الأدنى" : item.comparator === "max" ? "الحد الأعلى" : item.comparator === "one_of" ? "واحد من" : "يساوي"} · المطلوب: {item.requiredValue}</p>
-                        {linkedEvidence && <a href={linkedEvidence.sourceUrl} target="_blank" rel="noopener noreferrer">عرض دليل الشرط ↗</a>}
+                        {linkedEvidence && <a href={linkedEvidence.sourceUrl} target="_blank" rel="noopener noreferrer">عرض دليل الشرط {linkedEvidence.sourceTrust === "registered-official" ? "(نطاق مسجل)" : "(نطاق غير مسجل — غير متحقق)"} ↗</a>}
                         <label>قيمة المتقدم<input value={item.applicantValue} onChange={(event) => updateApplicantValue(item.id, event.target.value)} placeholder="أدخل القيمة للمقارنة" /></label>
                       </article>
                     );
