@@ -71,3 +71,9 @@ Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 - Vercel preview deployment is READY at https://scholar-intelligence-aytu186ux-ramzys-projects-90515bbd.vercel.app for pre-merge commit 6d2593e0ef7d2b876d8bc63494b1a6c8251d2a68. Browser-based visual QA and source-page live extraction testing remain unverified.
 - Production deployment for merge commit 7801f2666d8f44287aea4715b8d5bd3779191980 is QUEUED as dpl_BnGiT8gaVYweamY3yxXxFRnTWqYt. Do not claim production is updated until state becomes READY.
 - Next: verify the queued production deployment and perform browser smoke/visual QA; then add reviewed real-page parser fixtures and improve multilingual/table extraction. Keep Supabase deferred.
+
+
+## Verification update — 2026-11-23
+- Vercel production deployment dpl_H5YggvwYP3Phrxx6kcDnv44L9vrM is now confirmed READY on main at commit 6b63b081b56e478de5d33a4f09b74722e8e4b735. This deployment includes the merged source parser v0.2.0 and documentation-only follow-up commits.
+- Parser QA work is in branch test/official-source-parser-fixtures and is not yet merged or deployed.
+- Added short reviewed source excerpts for all eight curated sources and typed currency-range normalization; CI and preview deployment are pending.
