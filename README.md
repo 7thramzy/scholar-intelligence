@@ -51,3 +51,7 @@ Supabase provisioning remains deliberately deferred to the final phase. Do not c
 The official source fetch flow now runs a deterministic, versioned parser over the fetched text. It produces candidate facts for application deadlines, tuition, stipends, living costs, housing, insurance, travel, visa/residence, mandatory fees, eligibility, language, duration, and intake. Source-specific rule profiles supplement shared labels for the eight registered portals.
 
 Each candidate retains its exact excerpt, raw value, optional normalized date or currency amount, confidence hint, and parser version. Candidates are never automatically written to the evidence ledger or treated as verified. The user must select a candidate, review the source excerpt, and explicitly save it as evidence. Ambiguous dates and currency-less amounts remain unnormalized. The parser is heuristic and incomplete; absence of a candidate does not mean the source lacks the information.
+
+
+### Parser QA update
+Parser v0.2.0 adds reviewed, concise fixtures from the eight curated source portals and preserves explicit currency ranges (including JPY ranges) rather than collapsing them to one value. Explicit currency words such as “euros” are normalized; malformed grouped numbers, reversed ranges, and amounts without an explicit currency are rejected. These tests validate extraction categories against selected official-page excerpts; they do not establish complete page coverage or current scholarship eligibility.
