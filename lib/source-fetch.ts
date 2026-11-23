@@ -163,7 +163,7 @@ export function extractPageLinks(content: string, contentType: string, baseUrl: 
   if (!contentType.toLowerCase().includes("html")) return [];
   const seen = new Set<string>();
   const links: DiscoveredSourceLink[] = [];
-  const anchorPattern = /<a\b([^>]*?)href\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))([^>]*)>([\s\S]*?)<\/a>/gi;
+  const anchorPattern = /<a\b([^>]*?)\shref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))([^>]*)>([\s\S]*?)<\/a>/gi;
   const discoveryTerms = /scholarship|funding|master|graduate|postgraduate|programme|program|study|student|admission|application|apply|degree|eligib/i;
   const priorityTerms = /scholarship|funding|master|graduate|postgraduate|computer science|artificial intelligence|information technology|data science|engineering/i;
   for (const match of content.matchAll(anchorPattern)) {
