@@ -85,3 +85,18 @@ test("verifies evidence hashes and rejects modified excerpts", async () => {
   backup.evidence[0].excerpt = "A changed excerpt that no longer matches the stored fingerprint.";
   await assert.rejects(() => verifyLocalBackupEvidence(backup), /بصمة/);
 });
+
+test("preserves unregistered evidence as unverified in portable backups", async () => {
+  const unverifiedEvidence = await createEvidenceSnapshot({
+    opportunityId: "opp-1",
+    sourceUrl: "https://cs.example.edu/funding",
+    factType: "tuition",
+    excerpt: "The program tuition fee is published on the university department page."
+  }, {
+    id: "evidence-unregistered",
+    capturedAt: "2026-11-23T00:00:00.000Z"
+  });
+  const backup = createLocalBackup([opportunity], [unverifiedEvidence]);
+  assert.equal(backup.evidence[0].sourceTrust, "unverified");
+  await verifyLocalBackupEvidence(backup);
+});
