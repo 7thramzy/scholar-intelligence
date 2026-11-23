@@ -28,9 +28,10 @@ test("rejects insecure URLs and embedded credentials", () => {
   assert.equal(classifySourceUrl("https://user:pass@daad.de/").trust, "unverified");
 });
 
-test("requires a registered source and a sufficiently detailed excerpt", () => {
-  assert.equal(validateEvidenceDraft({ ...draft, sourceUrl: "https://unknown.example" }) !== null, true);
+test("allows HTTPS sources outside the curated registry but keeps them unverified", () => {
+  assert.equal(validateEvidenceDraft({ ...draft, sourceUrl: "https://university.example" }), null);
   assert.equal(validateEvidenceDraft({ ...draft, excerpt: "deadline soon" }) !== null, true);
+  assert.equal(validateEvidenceDraft({ ...draft, sourceUrl: "http://university.example" }) !== null, true);
   assert.equal(validateEvidenceDraft(draft), null);
 });
 
@@ -44,4 +45,16 @@ test("creates immutable evidence metadata with a SHA-256 fingerprint", async () 
   assert.equal(snapshot.contentHash.length, 64);
   assert.equal(snapshot.schemaVersion, 1);
   assert.equal(snapshot.excerpt, draft.excerpt);
+});
+
+test("captures an unregistered HTTPS source as unverified rather than trusted", async () => {
+  const snapshot = await createEvidenceSnapshot({
+    ...draft,
+    sourceUrl: "https://computer-science.example.edu/scholarships"
+  }, {
+    id: "evidence-unverified",
+    capturedAt: "2026-11-23T00:00:00.000Z"
+  });
+  assert.equal(snapshot.sourceTrust, "unverified");
+  assert.equal(snapshot.sourceName, null);
 });

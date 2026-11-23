@@ -200,7 +200,7 @@ export default function EvidenceWorkspace() {
                 {pagePreview && <div className="source-page-preview"><div className="source-preview-heading"><strong>{pagePreview.title ?? "نص الصفحة"}</strong><span>تم الجلب مع احترام robots.txt</span></div><a href={pagePreview.finalUrl} target="_blank" rel="noopener noreferrer">{pagePreview.finalUrl}</a><pre>{pagePreview.text}</pre><div className="source-preview-hash">SHA-256: {pagePreview.contentHash}</div><p>انسخ فقط الفقرة التي تثبت المعلومة المطلوبة والصقها في حقل المقتطف أدناه.</p></div>}
                 <label>نوع المعلومة<select value={factType} onChange={(event) => setFactType(event.target.value as EvidenceFactType)}>{EVIDENCE_FACT_TYPES.map((type) => <option key={type} value={type}>{FACT_LABELS[type]}</option>)}</select></label>
                 <label>المقتطف النصي من المصدر<textarea value={excerpt} onChange={(event) => setExcerpt(event.target.value)} rows={6} minLength={20} maxLength={12000} placeholder="الصق النص الذي يثبت الموعد أو شرط الأهلية أو عنصر التمويل…" required /></label>
-                <p className="evidence-hint">يجب أن يكون الرابط على نطاق مدرج في السجل الرسمي. المقتطف يُحفظ كما أدخلته بعد تطبيع المسافات.</p>
+                <p className="evidence-hint">يمكنك حفظ مقتطف يدوي من أي رابط HTTPS. النطاقات المسجلة تُطابق القائمة الرسمية؛ أما غير المسجلة فتُحفظ بصفة غير متحققة. الجلب الآلي يظل محصوراً بالقائمة.</p>
                 {error && <p className="form-error" role="alert">{error}</p>}
                 <button className="save-opportunity" type="submit" disabled={saving}>{saving ? "جارٍ إنشاء البصمة…" : "إضافة الدليل إلى السجل"}</button>
               </form>
@@ -215,7 +215,7 @@ export default function EvidenceWorkspace() {
                   <article className="evidence-snapshot" key={snapshot.id}>
                     <div className="evidence-snapshot-head"><span className="funding-tag">{FACT_LABELS[snapshot.factType as EvidenceFactType] ?? "معلومة أخرى"}</span><time>{new Date(snapshot.capturedAt).toLocaleString("ar")}</time></div>
                     <blockquote>{snapshot.excerpt}</blockquote>
-                    <div className="evidence-snapshot-source"><a href={snapshot.sourceUrl} target="_blank" rel="noopener noreferrer">{snapshot.sourceName ?? "المصدر"} ↗</a><span className="verified-source">نطاق مسجل</span></div>
+                    <div className="evidence-snapshot-source"><a href={snapshot.sourceUrl} target="_blank" rel="noopener noreferrer">{snapshot.sourceName ?? "مصدر غير مسجل"} ↗</a><span className={snapshot.sourceTrust === "registered-official" ? "verified-source" : "unverified-source"}>{snapshot.sourceTrust === "registered-official" ? "نطاق مسجل" : "نطاق غير مسجل — غير متحقق"}</span></div>
                     <div className="hash-row"><span>SHA-256</span><code>{snapshot.contentHash}</code></div>
                   </article>
                 ))}

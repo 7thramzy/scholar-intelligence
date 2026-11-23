@@ -24,7 +24,8 @@ Latest merged commit: e62116ef3dfe76f83f292a60c42163d0415a0a73
 ## Current limitations
 - Opportunity records are browser-local only and do not sync between devices.
 - Source registry now contains eight curated official scholarship/study portals. Domain matching requires HTTPS and exact host/subdomain matching; lookalike suffix domains are rejected.
-- Evidence workspace captures user-copied excerpts linked to a saved opportunity, classifies source-domain trust, timestamps each record, and stores a SHA-256 fingerprint. Evidence is append-only through the UI and remains browser-local.
+- Evidence workspace captures user-copied excerpts linked to a saved opportunity from any HTTPS domain, classifies registered versus unregistered source trust, timestamps each record, and stores a SHA-256 fingerprint. Evidence is append-only through the UI and remains browser-local.
+- Unregistered HTTPS sources can be retained for manual review but are visibly unverified. They cannot satisfy funding verification gates; only matching evidence from the curated official registry can.
 - A constrained server-side official-page fetch endpoint now accepts only registered HTTPS domains, validates every redirect against the same registered source, reads robots.txt before the page, enforces a 1 MB body cap and 10-second timeout, and returns extracted text plus a SHA-256 content fingerprint.
 - The evidence workspace can fetch a page for manual review; the user must select/copy the relevant excerpt and explicitly add it to the evidence ledger.
 - Fetch snapshots are returned for review but are not yet persisted as a historical fetch log; freshness monitoring and scheduled refresh remain unimplemented.
