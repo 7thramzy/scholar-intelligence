@@ -45,3 +45,9 @@ Before changing the project, read:
 6. `docs/ROADMAP.md`
 
 Supabase provisioning remains deliberately deferred to the final phase. Do not create paid resources or connect a database without checking the current plan and cost first.
+
+
+## Source extraction and normalization (review-first)
+The official source fetch flow now runs a deterministic, versioned parser over the fetched text. It produces candidate facts for application deadlines, tuition, stipends, living costs, housing, insurance, travel, visa/residence, mandatory fees, eligibility, language, duration, and intake. Source-specific rule profiles supplement shared labels for the eight registered portals.
+
+Each candidate retains its exact excerpt, raw value, optional normalized date or currency amount, confidence hint, and parser version. Candidates are never automatically written to the evidence ledger or treated as verified. The user must select a candidate, review the source excerpt, and explicitly save it as evidence. Ambiguous dates and currency-less amounts remain unnormalized. The parser is heuristic and incomplete; absence of a candidate does not mean the source lacks the information.

@@ -6,6 +6,7 @@ import { createEvidenceSnapshot, EVIDENCE_FACT_TYPES, type EvidenceFactType, typ
 import { OFFICIAL_SOURCES, type SourceCategory } from "@/lib/source-registry";
 import { createFetchHistoryRecord, FETCH_HISTORY_STORAGE_KEY, isSourceFetchHistoryRecord, type SourceFetchHistoryRecord } from "@/lib/source-history";
 import type { OfficialPageSnapshot } from "@/lib/source-fetch";
+import type { ExtractedFact } from "@/lib/source-parser";
 
 type Opportunity = {
   id: string;
@@ -67,7 +68,14 @@ export default function EvidenceWorkspace() {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [fetchingPage, setFetchingPage] = useState(false);
-  const [pagePreview, setPagePreview] = useState<{ title: string | null; text: string; contentHash: string; finalUrl: string } | null>(null);
+  const [pagePreview, setPagePreview] = useState<{
+    title: string | null;
+    text: string;
+    contentHash: string;
+    finalUrl: string;
+    extractedFacts: ExtractedFact[];
+    parserVersion: string;
+  } | null>(null);
 
   useEffect(() => {
     try {
@@ -128,10 +136,12 @@ export default function EvidenceWorkspace() {
       }
       if (!result || typeof result !== "object" || !("text" in result) || typeof result.text !== "string" ||
           !("contentHash" in result) || typeof result.contentHash !== "string" ||
-          !("finalUrl" in result) || typeof result.finalUrl !== "string") {
-        throw new Error("استجابة المصدر غير مكتملة.");
+          !("finalUrl" in result) || typeof result.finalUrl !== "string" ||
+          !("extractedFacts" in result) || !Array.isArray(result.extractedFacts) ||
+          !("parserVersion" in result) || typeof result.parserVersion !== "string") {
+        throw new Error("استجابة المصدر أو بيانات الاستخراج غير مكتملة.");
       }
-      const snapshot = result as unknown as OfficialPageSnapshot;
+      const snapshot = result as unknown as OfficialPageSnapshot & { extractedFacts: ExtractedFact[]; parserVersion: string };
       if (typeof snapshot.sourceId !== "string" || typeof snapshot.sourceName !== "string" ||
           typeof snapshot.requestedUrl !== "string" || typeof snapshot.fetchedAt !== "string" ||
           typeof snapshot.httpStatus !== "number" || typeof snapshot.contentType !== "string" ||
@@ -151,7 +161,9 @@ export default function EvidenceWorkspace() {
         title: snapshot.title,
         text: snapshot.text,
         contentHash: snapshot.contentHash,
-        finalUrl: snapshot.finalUrl
+        finalUrl: snapshot.finalUrl,
+        extractedFacts: snapshot.extractedFacts,
+        parserVersion: snapshot.parserVersion
       });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "تعذر جلب الصفحة الرسمية.");
@@ -192,13 +204,13 @@ export default function EvidenceWorkspace() {
       </header>
       <div className="workspace-content">
         <div className="workspace-heading">
-          <div><div className="eyebrow">SOURCE & EVIDENCE REGISTER</div><h1>سجل المصادر والأدلة</h1><p>احفظ مقتطفاً حرفياً من المصدر الرسمي مع رابط وتاريخ وبصمة رقمية.</p></div>
+          <div><div className="eyebrow">SOURCE & EVIDENCE REGISTER</div><h1>سجل المصادر والأدلة</h1><p>اجلب الصفحة الرسمية، استخرج الحقائق المرشحة، ثم راجع كل مقتطف قبل اعتماده.</p></div>
           <div className="workspace-count"><strong>{snapshots.length}</strong><span>دليل محفوظ</span></div>
         </div>
 
         <div className="local-notice">
           <span className="notice-dot" />
-          <div><strong>سجل أدلة وجلب محلي</strong><p>تُضاف الأدلة كسجلات جديدة. سجل الجلب يحفظ البصمة والتاريخ وحالة تغيّر الصفحة دون حفظ نص الصفحة الكامل. هذا لا يثبت صحة المحتوى.</p></div>
+          <div><strong>استخراج آلي مع مراجعة بشرية</strong><p>المحرك حتمي ولا يستخدم نموذجاً لغوياً. المرشحات ليست حقائق معتمدة؛ لا تُضاف إلى سجل الأدلة إلا بعد اختيارك ومراجعتك وحفظك الصريح.</p></div>
         </div>
 
         <section className="source-registry-panel">
@@ -217,20 +229,37 @@ export default function EvidenceWorkspace() {
         <section className="fetch-history-panel">
           <div className="list-panel-heading"><div><h2>تاريخ تحديث المصدر</h2><p>{selectedOpportunity ? selectedOpportunity.title : "اختر فرصة"}</p></div><span className="list-count">{selectedFetchHistory.length}</span></div>
           {selectedFetchHistory.length === 0 ? <div className="empty-history">لم يتم جلب صفحات لهذه الفرصة بعد.</div> : <div className="fetch-history-list">{selectedFetchHistory.slice(0, 10).map((item) => <article className="fetch-history-item" key={item.id}><div><strong>{item.title ?? item.sourceName}</strong><small>{new Date(item.fetchedAt).toLocaleString("ar")}</small></div><span className={item.changedFromPrevious === null ? "history-first" : item.changedFromPrevious ? "history-changed" : "history-same"}>{item.changedFromPrevious === null ? "أول رصد" : item.changedFromPrevious ? "تغيّر المحتوى" : "لم يتغير المحتوى"}</span><code>{item.contentHash.slice(0, 16)}…</code></article>)}</div>}
-        </section>\n\n        <div className="evidence-layout">
+        </section>
+
+        <div className="evidence-layout">
           <section className="opportunity-form-panel">
-            <div className="form-panel-heading"><span className="form-icon">＋</span><div><h2>إضافة دليل جديد</h2><p>انسخ المقتطف من صفحة المصدر كما هو</p></div></div>
+            <div className="form-panel-heading"><span className="form-icon">＋</span><div><h2>إضافة دليل جديد</h2><p>اختر مقتطفاً من نتائج الاستخراج أو انسخه يدوياً</p></div></div>
             {!loaded ? <p>جارٍ تحميل السجلات…</p> : opportunities.length === 0 ? (
               <div className="empty-opportunities compact-empty"><h3>لا توجد فرص مرتبطة</h3><p>أضف فرصة أولاً، ثم ارجع هنا لتوثيق أدلتها.</p><Link href="/opportunities">الانتقال إلى الفرص والمنح ↗</Link></div>
             ) : (
               <form className="opportunity-form" onSubmit={handleSubmit}>
                 <label>الفرصة المرتبطة<select value={selectedId} onChange={(event) => chooseOpportunity(event.target.value)}>{opportunities.map((item) => <option key={item.id} value={item.id}>{item.title} — {item.institution}</option>)}</select></label>
                 <label>رابط الصفحة الرسمية<input type="url" value={sourceUrl} onChange={(event) => { setSourceUrl(event.target.value); setPagePreview(null); }} required /></label>
-                <button className="fetch-source-button" type="button" onClick={fetchSourcePage} disabled={fetchingPage}>{fetchingPage ? "جارٍ جلب الصفحة وفحص سياسة الموقع…" : "جلب الصفحة من المصدر الرسمي"}</button>
-                {pagePreview && <div className="source-page-preview"><div className="source-preview-heading"><strong>{pagePreview.title ?? "نص الصفحة"}</strong><span>تم الجلب مع احترام robots.txt</span></div><a href={pagePreview.finalUrl} target="_blank" rel="noopener noreferrer">{pagePreview.finalUrl}</a><pre>{pagePreview.text}</pre><div className="source-preview-hash">SHA-256: {pagePreview.contentHash}</div><p>انسخ فقط الفقرة التي تثبت المعلومة المطلوبة والصقها في حقل المقتطف أدناه.</p></div>}
+                <button className="fetch-source-button" type="button" onClick={fetchSourcePage} disabled={fetchingPage}>{fetchingPage ? "جارٍ جلب الصفحة واستخراج الحقائق…" : "جلب الصفحة واستخراج الحقائق المرشحة"}</button>
+                {pagePreview && <div className="source-page-preview">
+                  <div className="source-preview-heading"><strong>{pagePreview.title ?? "نص الصفحة"}</strong><span>parser {pagePreview.parserVersion}</span></div>
+                  <a href={pagePreview.finalUrl} target="_blank" rel="noopener noreferrer">{pagePreview.finalUrl}</a>
+                  <div className="extracted-facts-heading"><strong>الحقائق المرشحة</strong><span>{pagePreview.extractedFacts.length} مرشحاً — جميعها تحتاج مراجعة</span></div>
+                  {pagePreview.extractedFacts.length === 0 ? <p className="evidence-hint">لم يجد المحرك حقائق مطابقة لقواعده في هذه الصفحة. هذا لا يعني أن المعلومات غير موجودة.</p> : <div className="extracted-facts-list">{pagePreview.extractedFacts.map((fact) => (
+                    <article className="extracted-fact" key={fact.id}>
+                      <div className="extracted-fact-meta"><span>{FACT_LABELS[fact.factType]}</span><small>{fact.confidence === "high" ? "مطابقة مباشرة" : "مطابقة استدلالية"} · غير معتمد</small></div>
+                      <p>{fact.excerpt}</p>
+                      {fact.normalizedValue && <small className="normalized-fact">{fact.normalizedValue.kind === "date" ? `تاريخ مقترح: ${fact.normalizedValue.isoDate}` : fact.normalizedValue.kind === "money" ? `قيمة مقترحة: ${fact.normalizedValue.amount} ${fact.normalizedValue.currency}` : `قيمة نصية: ${fact.normalizedValue.value}`}</small>}
+                      <button type="button" className="use-extracted-fact" onClick={() => { setFactType(fact.factType); setExcerpt(fact.excerpt); setSourceUrl(pagePreview.finalUrl); }}>استخدام المقتطف للمراجعة</button>
+                    </article>
+                  ))}</div>}
+                  <details className="raw-source-text"><summary>عرض النص المستخرج كاملاً</summary><pre>{pagePreview.text}</pre></details>
+                  <div className="source-preview-hash">SHA-256: {pagePreview.contentHash}</div>
+                  <p>اختيار المرشح لا يحفظه تلقائياً. راجع النص والمصدر ثم اضغط «إضافة الدليل إلى السجل».</p>
+                </div>}
                 <label>نوع المعلومة<select value={factType} onChange={(event) => setFactType(event.target.value as EvidenceFactType)}>{EVIDENCE_FACT_TYPES.map((type) => <option key={type} value={type}>{FACT_LABELS[type]}</option>)}</select></label>
                 <label>المقتطف النصي من المصدر<textarea value={excerpt} onChange={(event) => setExcerpt(event.target.value)} rows={6} minLength={20} maxLength={12000} placeholder="الصق النص الذي يثبت الموعد أو شرط الأهلية أو عنصر التمويل…" required /></label>
-                <p className="evidence-hint">يمكنك حفظ مقتطف يدوي من أي رابط HTTPS. النطاقات المسجلة تُطابق القائمة الرسمية؛ أما غير المسجلة فتُحفظ بصفة غير متحققة. الجلب الآلي يظل محصوراً بالقائمة.</p>
+                <p className="evidence-hint">الأدلة المحفوظة تُربط بالمصدر والتاريخ والبصمة. المصادر غير المسجلة تبقى غير متحققة ولا تؤكد التمويل الكامل.</p>
                 {error && <p className="form-error" role="alert">{error}</p>}
                 <button className="save-opportunity" type="submit" disabled={saving}>{saving ? "جارٍ إنشاء البصمة…" : "إضافة الدليل إلى السجل"}</button>
               </form>
