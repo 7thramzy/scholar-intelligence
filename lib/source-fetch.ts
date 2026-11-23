@@ -24,7 +24,7 @@ export interface OfficialPageSnapshot {
   text: string;
   contentHash: string;
   robotsPolicy: "allowed";
-  discoveredLinks: DiscoveredSourceLink[];
+  discoveredLinks?: DiscoveredSourceLink[];
 }
 
 export interface DiscoveredSourceLink {
