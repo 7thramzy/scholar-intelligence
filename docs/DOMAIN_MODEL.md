@@ -24,6 +24,9 @@ The source fetch pipeline returns source ID, requested/final URL, retrieval time
 ## Evidence snapshot integrity
 An evidence snapshot stores the opportunity reference, source URL, fact type, exact normalized excerpt, capture timestamp, registered/unregistered source trust, optional source registry match, schema version, and SHA-256 content fingerprint. The fingerprint detects accidental changes to the captured payload; it is not a digital signature and does not prove source authenticity. The current browser-local ledger is append-only through the UI but is not protected against browser storage edits or deletion.
 
+## Deadline evaluation
+A date-only deadline is classified using the current UTC date as `closed`, `closing-soon` (0–30 days remaining), `upcoming`, or `unknown` for missing/invalid dates. This is a derived display state, not a prediction of deadline extensions or timezone-specific closing hours.
+
 ## Evaluation interaction boundary
 The current evaluation workspace reads opportunity/evidence records from browser-local storage. Funding inputs, applicant values, and calculated results are session-only and are not persisted. A funding category is marked verified only when a matching evidence excerpt exists and the user explicitly confirms review. This is user-attested evidence review, not independent provider verification.
 
