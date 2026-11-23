@@ -57,3 +57,11 @@ Each phase requires acceptance criteria and verified tests before moving on. Reo
 - Every candidate includes the source excerpt, confidence hint, parser version, and needs-review state.
 - Evidence UI allows selecting a candidate into the manual evidence form; nothing is saved automatically.
 - Remaining: broaden official-source fixtures, improve multilingual layouts, add parser regression fixtures from reviewed real pages, and evaluate extraction precision before claiming production coverage.
+
+
+### Parser QA and normalization (feature branch: test/official-source-parser-fixtures)
+- Added short, reviewed official-page regression excerpts for all eight curated source IDs.
+- Expanded source-specific patterns for MEXT stipend/age eligibility, Chevening post-degree work-experience wording, DAAD scholarship-payment wording, and Campus France grant components.
+- Added explicit JPY and currency-word parsing, typed currency ranges, and validation for malformed amounts and reversed ranges.
+- UI renders a range as a range; no midpoint or single-value estimate is inferred.
+- Remaining: run CI, review failures, merge only on green CI, and continue collecting page-layout fixtures (tables, PDFs, multilingual pages) before claiming broad recall.
