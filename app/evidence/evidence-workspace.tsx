@@ -215,7 +215,7 @@ export default function EvidenceWorkspace() {
                   <article className="evidence-snapshot" key={snapshot.id}>
                     <div className="evidence-snapshot-head"><span className="funding-tag">{FACT_LABELS[snapshot.factType as EvidenceFactType] ?? "معلومة أخرى"}</span><time>{new Date(snapshot.capturedAt).toLocaleString("ar")}</time></div>
                     <blockquote>{snapshot.excerpt}</blockquote>
-                    <div className="evidence-snapshot-source"><a href={snapshot.sourceUrl} target="_blank" rel="noopener noreferrer">{snapshot.sourceName ?? "المصدر"} ↗</a><span className={snapshot.sourceTrust === "registered-official" ? "verified-source" : "unverified-source"}>{snapshot.sourceTrust === "registered-official" ? "نطاق مسجل" : "نطاق غير مسجل — غير متحقق"}</span></div>
+                    <div className="evidence-snapshot-source"><a href={snapshot.sourceUrl} target="_blank" rel="noopener noreferrer">{snapshot.sourceName ?? "مصدر غير مسجل"} ↗</a><span className={snapshot.sourceTrust === "registered-official" ? "verified-source" : "unverified-source"}>{snapshot.sourceTrust === "registered-official" ? "نطاق مسجل" : "نطاق غير مسجل — غير متحقق"}</span></div>
                     <div className="hash-row"><span>SHA-256</span><code>{snapshot.contentHash}</code></div>
                   </article>
                 ))}
