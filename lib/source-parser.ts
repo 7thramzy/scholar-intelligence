@@ -141,8 +141,9 @@ export function parseSourceText(input: ParseSourceTextInput): ExtractedFact[] {
   const facts: ExtractedFact[] = [];
   const seen = new Set<string>();
 
+  const rules = [...LABEL_RULES, ...(SOURCE_SPECIFIC_RULES[input.sourceId] ?? [])];
   for (const segment of segments) {
-    for (const rule of LABEL_RULES) {
+    for (const rule of rules) {
       const match = rule.pattern.exec(segment);
       if (!match) continue;
       const excerpt = segment.slice(0, 700);
