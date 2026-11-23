@@ -29,6 +29,7 @@ export default function Home() {
         <div className="side-label">مساحة العمل</div>
         <nav className="nav-list" aria-label="التنقل الرئيسي">
           <a className="nav-item active" href="#overview"><Icon>⌂</Icon>نظرة عامة</a>
+          <Link className="nav-item" href="/discover"><Icon>⌕</Icon>اكتشاف المنح</Link>
           <Link className="nav-item" href="/opportunities"><Icon>◇</Icon>الفرص والمنح</Link>
           <Link className="nav-item" href="/evidence"><Icon>✓</Icon>سجل الأدلة</Link>
           <Link className="nav-item" href="/evaluation"><Icon>◈</Icon>تقييم الأهلية والتمويل</Link>
