@@ -175,7 +175,7 @@ export default function EvaluationWorkspace() {
         const expected = parseAmount(input.expected);
         const covered = parseAmount(input.covered);
         if (expected.error || covered.error) throw new Error("أدخل مبالغ موجبة أو صفراً وبحد أقصى منزلتين عشريتين.");
-        const evidenceForCategory = selectedEvidence.filter((item) => CATEGORY_EVIDENCE[category].includes(item.factType as EvidenceFactType));
+        const evidenceForCategory = selectedEvidence.filter((item) => item.sourceTrust === "registered-official" && CATEGORY_EVIDENCE[category].includes(item.factType as EvidenceFactType));
         const reviewed = reviewedEvidence[selectedId]?.[category] === true;
         return {
           category,
@@ -295,7 +295,7 @@ export default function EvaluationWorkspace() {
                 <div className="funding-input-table">
                   <div className="funding-input-head"><span>عنصر التكلفة</span><span>التكلفة الكلية</span><span>المغطى بالمنحة</span></div>
                   {REQUIRED_FUNDING_CATEGORIES.map((category) => {
-                    const supporting = selectedEvidence.filter((item) => CATEGORY_EVIDENCE[category].includes(item.factType as EvidenceFactType));
+                    const supporting = selectedEvidence.filter((item) => item.sourceTrust === "registered-official" && CATEGORY_EVIDENCE[category].includes(item.factType as EvidenceFactType));
                     const reviewed = reviewedEvidence[selectedId]?.[category] === true;
                     return (
                       <div className="funding-input-row" key={category}>
@@ -330,7 +330,7 @@ export default function EvaluationWorkspace() {
                   <label>اسم الشرط<input value={criterionForm.label} onChange={(event) => setCriterionForm({ ...criterionForm, label: event.target.value })} placeholder="الجنسية / المعدل / اللغة" /></label>
                   <label>نوع المقارنة<select value={criterionForm.comparator} onChange={(event) => setCriterionForm({ ...criterionForm, comparator: event.target.value as EligibilityComparator })}><option value="equals">يساوي</option><option value="min">الحد الأدنى</option><option value="max">الحد الأعلى</option><option value="one_of">واحد من الخيارات</option></select></label>
                   <label>القيمة المطلوبة من البرنامج<input value={criterionForm.requiredValue} onChange={(event) => setCriterionForm({ ...criterionForm, requiredValue: event.target.value })} placeholder={criterionForm.comparator === "one_of" ? "Yemen, Jordan, Egypt" : "مثال: 3.5 أو English"} /></label>
-                  <label>الدليل الرسمي<select value={criterionForm.evidenceId} onChange={(event) => setCriterionForm({ ...criterionForm, evidenceId: event.target.value })}><option value="">اختر دليلاً</option>{eligibleEvidence.map((item) => <option key={item.id} value={item.id}>{item.sourceName ?? "المصدر"} — {item.excerpt.slice(0, 65)}</option>)}</select></label>
+                  <label>الدليل الرسمي<select value={criterionForm.evidenceId} onChange={(event) => setCriterionForm({ ...criterionForm, evidenceId: event.target.value })}><option value="">اختر دليلاً</option>{eligibleEvidence.map((item) => <option key={item.id} value={item.id}>{item.sourceName ?? "نطاق غير مسجل — غير متحقق"} — {item.excerpt.slice(0, 65)}</option>)}</select></label>
                   <label className="hard-rule-toggle"><input type="checkbox" checked={criterionForm.hard} onChange={(event) => setCriterionForm({ ...criterionForm, hard: event.target.checked })} /> شرط إلزامي للقبول</label>
                   <button className="secondary-action" type="button" onClick={addCriterion}>إضافة الشرط</button>
                 </div>
