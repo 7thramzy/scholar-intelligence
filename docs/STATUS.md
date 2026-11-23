@@ -2,7 +2,8 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest merged commit: 558f7cf513604032a5598d386b83111ae6ec44b7
+Latest application feature merge: 558f7cf513604032a5598d386b83111ae6ec44b7
+Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 
 ## Completed
 - Agent instructions, project context, architecture, security, decisions, domain model, roadmap, and handoff docs merged.
