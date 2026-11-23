@@ -31,6 +31,7 @@ export default function Home() {
           <a className="nav-item active" href="#overview"><Icon>⌂</Icon>نظرة عامة</a>
           <Link className="nav-item" href="/opportunities"><Icon>◇</Icon>الفرص والمنح</Link>
           <Link className="nav-item" href="/evidence"><Icon>✓</Icon>سجل الأدلة</Link>
+          <Link className="nav-item" href="/evaluation"><Icon>◈</Icon>تقييم الأهلية والتمويل</Link>
           <a className="nav-item" href="#funding"><Icon>◈</Icon>تحليل التمويل</a>
           <a className="nav-item" href="#applications"><Icon>▤</Icon>طلبات التقديم</a>
           <a className="nav-item" href="#profile"><Icon>◎</Icon>ملفي الأكاديمي</a>

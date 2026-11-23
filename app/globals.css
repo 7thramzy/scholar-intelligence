@@ -180,3 +180,54 @@ a{color:inherit;text-decoration:none}
 .edit-opportunity{height:26px;padding:0 8px;font-size:9px}
 .cancel-edit-opportunity{width:100%;height:36px;background:#fafafa}
 @media(max-width:520px){.backup-toolbar{justify-content:stretch}.backup-toolbar button{flex:1;padding:0 6px;font-size:8px}}
+
+/* Deterministic evaluation workspace */
+.evaluation-selector{display:flex;align-items:end;justify-content:space-between;gap:14px;background:#fff;border:1px solid #e8ebef;border-radius:10px;padding:14px 17px;margin-bottom:16px}
+.evaluation-selector label{display:grid;gap:6px;min-width:min(100%,420px);font-size:10px;color:#687681}
+.evaluation-selector select,.currency-select select{height:37px;border:1px solid #e1e6e9;border-radius:7px;padding:0 10px;background:#fff;color:#263746;font:11px "IBM Plex Sans Arabic",sans-serif}
+.evaluation-selector>a{font-size:10px;color:#397e78;white-space:nowrap}
+.evaluation-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
+.evaluation-panel{background:#fff;border:1px solid #e8ebef;border-radius:12px;padding:20px;min-width:0}
+.evaluation-panel-heading{display:flex;align-items:center;justify-content:space-between}
+.evaluation-panel-heading h2{font-size:15px;margin:6px 0 0}
+.evaluation-icon{width:34px;height:34px;border-radius:10px;background:#f4f0e7;color:#a98b58;display:grid;place-items:center;font-size:18px}
+.evaluation-intro{font-size:10px;color:#84909b;line-height:1.9;margin:12px 0}
+.currency-select{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#6e7b86;margin:12px 0}
+.currency-select select{min-width:100px}
+.funding-input-table{border:1px solid #e9edf0;border-radius:8px;overflow:hidden}
+.funding-input-head,.funding-input-row{display:grid;grid-template-columns:minmax(100px,1.1fr) minmax(75px,.7fr) minmax(75px,.7fr);gap:8px;align-items:center;padding:10px}
+.funding-input-head{background:#f8f9fa;font-size:9px;color:#7d8993}
+.funding-input-row{border-top:1px solid #edf0f2}
+.funding-category-name{display:grid;gap:3px}
+.funding-category-name strong{font-size:10px;font-weight:600}
+.funding-category-name small{font-size:8px;color:#9a8b71}
+.funding-input-row>input{width:100%;height:34px;border:1px solid #e1e6e9;border-radius:6px;padding:0 7px;font:10px Manrope;color:#334653;min-width:0}
+.funding-evidence-review{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding-top:2px}
+.funding-evidence-review label{display:flex;align-items:center;gap:5px;font-size:8px;color:#64736f}
+.funding-evidence-review input{accent-color:#498878}
+.funding-evidence-review a{font-size:8px;color:#397e78}
+.evaluation-footnote{font-size:9px;line-height:1.8;color:#8b7959;background:#f8f5ef;border-radius:7px;padding:9px;margin:12px 0}
+.evaluation-result{border:1px solid #e8ebef;border-radius:8px;padding:12px;margin-top:12px}
+.evaluation-result>strong{font-size:11px}
+.evaluation-result p{font-size:9px;line-height:1.8;color:#7d8993;margin:7px 0 0}
+.result-fully-funded-confirmed{background:#f0f7f3;border-color:#d9e9df;color:#34745c}
+.result-partially-funded{background:#fbf5ea;border-color:#eee2c9;color:#99713e}
+.result-unknown,.result-uncertain,.result-ineligible,.result-needs-review{background:#f7f8f9;color:#5c6c77}
+.result-eligible{background:#f0f7f3;color:#34745c}
+.result-amounts{display:grid;gap:5px;margin-top:10px;font-size:10px;color:#5d7068}
+.criterion-builder{display:grid;gap:10px;border:1px solid #e9edf0;border-radius:9px;padding:13px;margin:14px 0}
+.criterion-builder label:not(.hard-rule-toggle){display:grid;gap:5px;font-size:9px;color:#697782}
+.criterion-builder input:not([type=checkbox]),.criterion-builder select,.criterion-card input{width:100%;height:35px;border:1px solid #e1e6e9;border-radius:6px;padding:0 8px;font:10px "IBM Plex Sans Arabic",sans-serif;color:#334653}
+.hard-rule-toggle{display:flex;align-items:center;gap:7px;font-size:9px;color:#64736f}
+.hard-rule-toggle input{accent-color:#498878}
+.secondary-action{height:35px;border:1px solid #d9e5e1;border-radius:7px;background:#f5faf8;color:#397e72;font:600 10px "IBM Plex Sans Arabic",sans-serif;cursor:pointer}
+.criterion-list{display:grid;gap:9px;margin-bottom:12px}
+.criterion-card{border:1px solid #e9edf0;border-radius:8px;padding:11px}
+.criterion-card-head{display:flex;align-items:center;justify-content:space-between}
+.criterion-card-head strong{font-size:10px}
+.criterion-card-head button{border:0;background:transparent;color:#a16b5f;font:9px "IBM Plex Sans Arabic",sans-serif;cursor:pointer}
+.criterion-card p{font-size:9px;color:#8b96a0;margin:6px 0}
+.criterion-card>a{font-size:8px;color:#397e78}
+.criterion-card label{display:grid;gap:5px;font-size:9px;color:#687681;margin-top:9px}
+@media(max-width:1050px){.evaluation-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.evaluation-selector{align-items:stretch;flex-direction:column}.evaluation-selector label{min-width:0}.evaluation-selector>a{align-self:flex-start}.evaluation-panel{padding:14px}.funding-input-head,.funding-input-row{grid-template-columns:minmax(80px,1fr) minmax(60px,.7fr) minmax(60px,.7fr);gap:5px;padding:8px}.funding-input-head{font-size:8px}.funding-input-row>input{font-size:9px;padding:0 4px}}
