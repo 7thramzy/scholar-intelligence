@@ -249,7 +249,7 @@ export default function EvidenceWorkspace() {
                     <article className="extracted-fact" key={fact.id}>
                       <div className="extracted-fact-meta"><span>{FACT_LABELS[fact.factType]}</span><small>{fact.confidence === "high" ? "مطابقة مباشرة" : "مطابقة استدلالية"} · غير معتمد</small></div>
                       <p>{fact.excerpt}</p>
-                      {fact.normalizedValue && <small className="normalized-fact">{fact.normalizedValue.kind === "date" ? `تاريخ مقترح: ${fact.normalizedValue.isoDate}` : fact.normalizedValue.kind === "money" ? `قيمة مقترحة: ${fact.normalizedValue.amount} ${fact.normalizedValue.currency}` : `قيمة نصية: ${fact.normalizedValue.value}`}</small>}
+                      {fact.normalizedValue && <small className="normalized-fact">{fact.normalizedValue.kind === "date" ? `تاريخ مقترح: ${fact.normalizedValue.isoDate}` : fact.normalizedValue.kind === "money" ? `قيمة مقترحة: ${fact.normalizedValue.amount} ${fact.normalizedValue.currency}` : fact.normalizedValue.kind === "money-range" ? `نطاق مقترح: ${fact.normalizedValue.minimum}–${fact.normalizedValue.maximum} ${fact.normalizedValue.currency}` : `قيمة نصية: ${fact.normalizedValue.value}`}</small>}
                       <button type="button" className="use-extracted-fact" onClick={() => { setFactType(fact.factType); setExcerpt(fact.excerpt); setSourceUrl(pagePreview.finalUrl); }}>استخدام المقتطف للمراجعة</button>
                     </article>
                   ))}</div>}
