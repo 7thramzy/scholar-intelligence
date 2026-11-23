@@ -16,10 +16,10 @@
 - **AuditEvent**: actor, action, target, timestamp, safe metadata.
 
 ## Local backup format
-Version 1 backup bundles public opportunity metadata and evidence snapshots. Import validates schema and references, merges by stable IDs, rejects conflicting IDs, and verifies evidence fingerprints before writing. This is a portability mechanism for local browser data, not a server backup.
+Version 1 backup bundles public opportunity metadata, evidence snapshots, and source fetch metadata history. Import validates schema and references, merges by stable IDs, rejects conflicting IDs, and verifies evidence fingerprints before writing. This is a portability mechanism for local browser data, not a server backup.
 
 ## Source fetch records
-The source fetch pipeline returns source ID, requested/final URL, retrieval timestamp, HTTP status, content type, extracted title/text, robots-policy result, and SHA-256 of the raw response. Historical persistence, parser versioning, and freshness transitions are not yet implemented.
+The source fetch pipeline returns source ID, requested/final URL, retrieval timestamp, HTTP status, content type, extracted title/text, robots-policy result, and SHA-256 of the raw response. Fetch metadata history is stored locally with the content fingerprint and a first-seen/changed/unchanged comparison against the previous fetch for the same opportunity and URL. Server-side persistence, parser versioning, and scheduled freshness transitions are not yet implemented.
 
 ## Evidence snapshot integrity
 An evidence snapshot stores the opportunity reference, source URL, fact type, exact normalized excerpt, capture timestamp, registered/unregistered source trust, optional source registry match, schema version, and SHA-256 content fingerprint. The fingerprint detects accidental changes to the captured payload; it is not a digital signature and does not prove source authenticity. The current browser-local ledger is append-only through the UI but is not protected against browser storage edits or deletion.
