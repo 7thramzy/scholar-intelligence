@@ -2,8 +2,8 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest application feature merge: 082f81d3fe100539c24c92e73946162e5c9aecfe
-Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
+Latest application feature merge: 5f444461f4de047bfca942e09dcd76279abb4edc
+Latest README update: a713c03123e94e83d8ef81223ba2975d48f68656
 
 ## Completed
 - Agent instructions, project context, architecture, security, decisions, domain model, roadmap, and handoff docs merged.
@@ -82,3 +82,12 @@ Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 - PR #18 merged to main at commit 5f444461f4de047bfca942e09dcd76279abb4edc after GitHub Actions run 51 passed: dependency audit, ESLint, 63 unit tests, TypeScript, and production build.
 - Vercel has not yet deployed the merge commit. The project's free deployment/build quota check is failing with a build-rate-limit response; no paid upgrade was made.
 - Live source scans and browser interaction remain unverified. Root-page coverage may be limited; no claim is made that all programmes are discovered.
+
+
+## Latest verification — 2026-11-23
+- PR #18 is merged to main at `5f444461f4de047bfca942e09dcd76279abb4edc`.
+- GitHub Actions run 51 (`45158017410`) passed: dependency audit, ESLint, 63 unit tests, TypeScript typecheck, and production build.
+- Latest confirmed Vercel production deployment remains `dpl_8qs69JKhMuyG2PQ3VSzGbKDeBNwd` at the earlier commit `7309d9a047d168dfd852f3fd5dd78144354c9407`.
+- A new deployment request was rejected with HTTP 402 `api-deployments-free-per-day` (more than 100 deployments in 24 hours; retry-after 86400 seconds). No CLI session or local linked checkout is available for a safe CLI fallback. No plan/billing change was made.
+- Confirmed live runtime consequence: `/discover` and `/api/source-discover` still return HTTP 404 on production until a new deployment succeeds.
+- Feature is merged and CI-verified, but not deployed or live-tested. Retry deployment after the quota window resets; then test all eight sources with real network responses.
