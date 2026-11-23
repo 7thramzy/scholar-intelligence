@@ -212,7 +212,7 @@ export default function EvaluationWorkspace() {
     }
     const nextCriterion: CriterionDraft = {
       ...criterionForm,
-      id: \`criterion-\${Date.now()}-\${Math.random().toString(36).slice(2, 7)}\`,
+      id: "criterion-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7),
       label: criterionForm.label.trim(),
       requiredValue: criterionForm.requiredValue.trim()
     };
