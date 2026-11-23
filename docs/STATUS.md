@@ -2,7 +2,7 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest application feature merge: 558f7cf513604032a5598d386b83111ae6ec44b7
+Latest application feature merge: 082f81d3fe100539c24c92e73946162e5c9aecfe
 Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 
 ## Completed
@@ -60,20 +60,14 @@ Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 8. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
 
 
-## Source extraction milestone — merged, production deployment queued
-- Merged PR #16 into main. Merge commit: 7801f2666d8f44287aea4715b8d5bd3779191980.
-- Added lib/source-parser.ts with shared labelled extraction and source-specific rule profiles for DAAD, Erasmus Mundus, Study in Japan, Türkiye Scholarships, Chevening, Commonwealth, Stipendium Hungaricum, and Campus France.
-- Candidate fields include deadline, tuition, stipend, living, housing, insurance, travel, visa, mandatory fees, eligibility, language, duration, and intake.
-- Date normalization accepts validated ISO and month-name formats only. Money normalization requires an explicit supported currency code or symbol. Ambiguous dates and currency-less amounts remain raw.
-- POST /api/source-fetch returns parserVersion and review-only extractedFacts alongside the existing page snapshot.
-- Evidence UI displays candidates, allows selection into the manual evidence form, and requires a separate explicit save. No candidate is auto-approved or auto-persisted.
-- GitHub Actions run 47 (45154593854) passed: dependency audit reported zero vulnerabilities, ESLint passed, all 51 unit tests passed, TypeScript typecheck passed, and production build passed.
-- Vercel preview deployment is READY at https://scholar-intelligence-aytu186ux-ramzys-projects-90515bbd.vercel.app for pre-merge commit 6d2593e0ef7d2b876d8bc63494b1a6c8251d2a68. Browser-based visual QA and source-page live extraction testing remain unverified.
-- Production deployment for merge commit 7801f2666d8f44287aea4715b8d5bd3779191980 is QUEUED as dpl_BnGiT8gaVYweamY3yxXxFRnTWqYt. Do not claim production is updated until state becomes READY.
-- Next: verify the queued production deployment and perform browser smoke/visual QA; then add reviewed real-page parser fixtures and improve multilingual/table extraction. Keep Supabase deferred.
-
-
-## Verification update — 2026-11-23
-- Vercel production deployment dpl_H5YggvwYP3Phrxx6kcDnv44L9vrM is now confirmed READY on main at commit 6b63b081b56e478de5d33a4f09b74722e8e4b735. This deployment includes the merged source parser v0.1.0 and documentation-only follow-up commits. Parser v0.2.0 remains isolated on the open QA branch until CI passes and it is merged.
-- Parser QA work is in branch test/official-source-parser-fixtures and is not yet merged or deployed.
-- Added short reviewed source excerpts for all eight curated sources and typed currency-range normalization; CI and preview deployment are pending.
+## Source extraction and parser QA — merged
+- PR #16 added deterministic parser v0.1.0 and review-only candidate flow; merge commit 7801f2666d8f44287aea4715b8d5bd3779191980.
+- PR #17 added concise official-page regression fixtures for all eight curated source IDs and parser v0.2.0 improvements; merge commit 082f81d3fe100539c24c92e73946162e5c9aecfe.
+- Parser profiles cover DAAD, Erasmus Mundus, Study in Japan/MEXT, Türkiye Scholarships, Chevening, Commonwealth, Stipendium Hungaricum, and Campus France.
+- Candidate types cover deadline, tuition, stipend, living, housing, insurance, travel, visa, mandatory fees, eligibility, language, duration, and intake.
+- Normalization accepts validated ISO/month-name dates, explicit currency codes/symbols/words, and typed currency ranges. Malformed number grouping, reversed ranges, ambiguous numeric dates, and amounts without explicit currency remain unnormalized.
+- Every candidate retains its excerpt, parser version, confidence hint, and needs-review state. Candidates are not auto-saved, auto-approved, or used to determine eligibility/funding completeness.
+- GitHub Actions run 50 (45156375438) passed: dependency audit reported zero vulnerabilities, ESLint passed, 54 unit tests passed, TypeScript typecheck passed, and production build passed.
+- Vercel preview deployment dpl_DG6uPHfaHYTtUktRhUNaCwvCHhhj is READY for the PR #17 head commit. Production deployment for merge commit 082f81d3fe100539c24c92e73946162e5c9aecfe must still be checked before claiming v0.2.0 is live.
+- Browser interaction testing and live page extraction are not verified. The official excerpts are short regression fixtures, not a full-page coverage benchmark.
+- Next: verify production deployment, perform browser smoke tests when an authenticated browser is available, and add representative table/PDF/multilingual page fixtures. Keep Supabase deferred.
