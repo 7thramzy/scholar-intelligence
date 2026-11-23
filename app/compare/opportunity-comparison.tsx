@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { classifySourceUrl } from "@/lib/source-registry";
+import { evaluateDeadline } from "@/lib/deadline";
 
 type Opportunity = {
   id: string;
@@ -91,7 +92,11 @@ export default function OpportunityComparison() {
   function cellValue(item: Opportunity, key: string): ReactNode {
     if (key === "institution") return item.institution;
     if (key === "field") return item.field || "غير محدد";
-    if (key === "deadline") return item.deadline || "غير محدد";
+    if (key === "deadline") {
+      const result = evaluateDeadline(item.deadline);
+      const label = result.status === "closed" ? "انتهى" : result.status === "closing-soon" ? "قريب" : result.status === "upcoming" ? "قادم" : "غير معروف";
+      return <div className="deadline-compare-cell"><span>{item.deadline || "غير محدد"}</span><span className={"deadline-state deadline-" + result.status}>{label}{result.daysRemaining !== null && result.daysRemaining >= 0 ? " · " + result.daysRemaining + " يوم" : ""}</span></div>;
+    }
     if (key === "funding") return FUNDING_LABELS[item.fundingClaim];
     if (key === "source") {
       const trust = classifySourceUrl(item.sourceUrl);
