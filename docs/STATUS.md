@@ -52,7 +52,7 @@ Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 ## Next actions
 1. Verify and smoke-test the deadline-status deployment when the Vercel free deployment quota resets.
 2. Persist source fetch history server-side, add parser version provenance, scheduled freshness checks, and durable rate limiting.
-3. Build robust extraction/normalization that maps source facts to program records while retaining reviewable provenance.
+3. Expand extraction/normalization using reviewed real-page fixtures, improve multilingual and table layouts, and measure precision before wider automation.
 4. Persist public program cost/eligibility criteria and comparison sets without persisting applicant values before authentication.
 5. Add authentication and privacy boundaries before storing any applicant profile or private documents.
 6. Add Gmail/Drive integrations only after consent scopes, token storage, and access isolation are designed.
@@ -60,14 +60,14 @@ Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 8. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
 
 
-## Source extraction milestone — CI passed, awaiting merge
-- Branch: feat/source-ingestion-normalization.
+## Source extraction milestone — merged, production deployment queued
+- Merged PR #16 into main. Merge commit: 7801f2666d8f44287aea4715b8d5bd3779191980.
 - Added lib/source-parser.ts with shared labelled extraction and source-specific rule profiles for DAAD, Erasmus Mundus, Study in Japan, Türkiye Scholarships, Chevening, Commonwealth, Stipendium Hungaricum, and Campus France.
 - Candidate fields include deadline, tuition, stipend, living, housing, insurance, travel, visa, mandatory fees, eligibility, language, duration, and intake.
 - Date normalization accepts validated ISO and month-name formats only. Money normalization requires an explicit supported currency code or symbol. Ambiguous dates and currency-less amounts remain raw.
-- POST /api/source-fetch now returns parserVersion and review-only extractedFacts alongside the existing page snapshot.
+- POST /api/source-fetch returns parserVersion and review-only extractedFacts alongside the existing page snapshot.
 - Evidence UI displays candidates, allows selection into the manual evidence form, and requires a separate explicit save. No candidate is auto-approved or auto-persisted.
-- CI run 47 (GitHub Actions run 45154593854) passed: dependency audit reported zero vulnerabilities, ESLint passed, all 51 unit tests passed, TypeScript typecheck passed, and production build passed.
-- Vercel preview deployment is READY at https://scholar-intelligence-aytu186ux-ramzys-projects-90515bbd.vercel.app for commit 6d2593e0ef7d2b876d8bc63494b1a6c8251d2a68. Browser-based visual QA and source-page live extraction testing remain unverified.
-- Production remains on older commit ee5436fbbcd3d944bdfbbca40733e1f66c7f34ea. Do not claim this feature or the deadline-status feature is live in production until a new production deployment is READY.
-- Next: merge after successful CI, then verify production deployment quota/status. Keep Supabase deferred.
+- GitHub Actions run 47 (45154593854) passed: dependency audit reported zero vulnerabilities, ESLint passed, all 51 unit tests passed, TypeScript typecheck passed, and production build passed.
+- Vercel preview deployment is READY at https://scholar-intelligence-aytu186ux-ramzys-projects-90515bbd.vercel.app for pre-merge commit 6d2593e0ef7d2b876d8bc63494b1a6c8251d2a68. Browser-based visual QA and source-page live extraction testing remain unverified.
+- Production deployment for merge commit 7801f2666d8f44287aea4715b8d5bd3779191980 is QUEUED as dpl_BnGiT8gaVYweamY3yxXxFRnTWqYt. Do not claim production is updated until state becomes READY.
+- Next: verify the queued production deployment and perform browser smoke/visual QA; then add reviewed real-page parser fixtures and improve multilingual/table extraction. Keep Supabase deferred.
