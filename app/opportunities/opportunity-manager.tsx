@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { createLocalBackup, mergeLocalBackup, MAX_BACKUP_BYTES, OPPORTUNITIES_STORAGE_KEY, EVIDENCE_STORAGE_KEY, parseLocalBackupJson, verifyLocalBackupEvidence, type BackupOpportunity } from "@/lib/local-backup";
 import type { EvidenceSnapshot } from "@/lib/evidence";
+import { evaluateDeadline } from "@/lib/deadline";
 import { FETCH_HISTORY_STORAGE_KEY, isSourceFetchHistoryRecord, type SourceFetchHistoryRecord } from "@/lib/source-history";
 
 type FundingClaim = "unknown" | "partial" | "claimed";
@@ -292,7 +293,7 @@ export default function OpportunityManager() {
                     </div>
                     <div className="opportunity-meta">
                       <span className={`funding-tag funding-${item.fundingClaim}`}>{fundingLabels[item.fundingClaim]}</span>
-                      <span className="deadline-tag">{item.deadline ? `آخر موعد: ${item.deadline}` : "الموعد غير محدد"}</span>
+                      <span className="deadline-tag">{item.deadline ? "آخر موعد: " + item.deadline : "الموعد غير محدد"} {item.deadline && <span className={"deadline-state deadline-" + evaluateDeadline(item.deadline).status}>{evaluateDeadline(item.deadline).status === "closed" ? "انتهى" : evaluateDeadline(item.deadline).status === "closing-soon" ? "قريب" : evaluateDeadline(item.deadline).status === "upcoming" ? "قادم" : "غير معروف"}</span>}</span>
                     </div>
                     <a className="source-link" href={item.sourceUrl} target="_blank" rel="noopener noreferrer">فتح المصدر الرسمي ↗</a>
                   </article>

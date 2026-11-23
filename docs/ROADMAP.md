@@ -30,6 +30,7 @@
 - Deadline state evaluator and program/scholarship normalization. (remaining)
 - Opportunity add/edit/save and safe local export/import with integrity verification. (implemented)
 - Side-by-side comparison of up to four opportunities with evidence and source freshness metadata. (implemented)
+- Deterministic deadline status (closed, closing soon, upcoming, unknown). (implemented)
 - Automated opportunity search/discovery, detailed opportunity records, and persisted comparisons. (remaining)
 
 ## Phase 4 — Personal workflow
