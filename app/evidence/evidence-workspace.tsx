@@ -198,7 +198,7 @@ export default function EvidenceWorkspace() {
 
         <div className="local-notice">
           <span className="notice-dot" />
-          <div><strong>سجل أدلة محلي غير قابل للتحرير من الواجهة</strong><p>تُضاف الأدلة كسجلات جديدة ولا تُعدّل الأدلة السابقة. لا يوجد جلب آلي للصفحات أو تحقق من صحة محتواها حتى الآن.</p></div>
+          <div><strong>سجل أدلة وجلب محلي</strong><p>تُضاف الأدلة كسجلات جديدة. سجل الجلب يحفظ البصمة والتاريخ وحالة تغيّر الصفحة دون حفظ نص الصفحة الكامل. هذا لا يثبت صحة المحتوى.</p></div>
         </div>
 
         <section className="source-registry-panel">
@@ -214,7 +214,10 @@ export default function EvidenceWorkspace() {
           </div>
         </section>
 
-        <section className="fetch-history-panel">\n          <div className="list-panel-heading"><div><h2>تاريخ تحديث المصدر</h2><p>{selectedOpportunity ? selectedOpportunity.title : "اختر فرصة"}</p></div><span className="list-count">{selectedFetchHistory.length}</span></div>\n          {selectedFetchHistory.length === 0 ? <div className="empty-history">لم يتم جلب صفحات لهذه الفرصة بعد.</div> : <div className="fetch-history-list">{selectedFetchHistory.slice(0, 10).map((item) => <article className="fetch-history-item" key={item.id}><div><strong>{item.title ?? item.sourceName}</strong><small>{new Date(item.fetchedAt).toLocaleString("ar")}</small></div><span className={item.changedFromPrevious === null ? "history-first" : item.changedFromPrevious ? "history-changed" : "history-same"}>{item.changedFromPrevious === null ? "أول رصد" : item.changedFromPrevious ? "تغيّر المحتوى" : "لم يتغير المحتوى"}</span><code>{item.contentHash.slice(0, 16)}…</code></article>)}</div>}\n        </section>\n\n        <div className="evidence-layout">
+        <section className="fetch-history-panel">
+          <div className="list-panel-heading"><div><h2>تاريخ تحديث المصدر</h2><p>{selectedOpportunity ? selectedOpportunity.title : "اختر فرصة"}</p></div><span className="list-count">{selectedFetchHistory.length}</span></div>
+          {selectedFetchHistory.length === 0 ? <div className="empty-history">لم يتم جلب صفحات لهذه الفرصة بعد.</div> : <div className="fetch-history-list">{selectedFetchHistory.slice(0, 10).map((item) => <article className="fetch-history-item" key={item.id}><div><strong>{item.title ?? item.sourceName}</strong><small>{new Date(item.fetchedAt).toLocaleString("ar")}</small></div><span className={item.changedFromPrevious === null ? "history-first" : item.changedFromPrevious ? "history-changed" : "history-same"}>{item.changedFromPrevious === null ? "أول رصد" : item.changedFromPrevious ? "تغيّر المحتوى" : "لم يتغير المحتوى"}</span><code>{item.contentHash.slice(0, 16)}…</code></article>)}</div>}
+        </section>\n\n        <div className="evidence-layout">
           <section className="opportunity-form-panel">
             <div className="form-panel-heading"><span className="form-icon">＋</span><div><h2>إضافة دليل جديد</h2><p>انسخ المقتطف من صفحة المصدر كما هو</p></div></div>
             {!loaded ? <p>جارٍ تحميل السجلات…</p> : opportunities.length === 0 ? (
