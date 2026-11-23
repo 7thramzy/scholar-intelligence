@@ -42,6 +42,13 @@ test("rejects invalid calendar dates and ambiguous numeric dates", () => {
   assert.equal(normalizeDate("2027-02-29"), null);
 });
 
+test("applies a source-specific Erasmus rule profile", () => {
+  const facts = parseSourceText({ sourceId: "erasmus-mundus", text: "Participation costs are covered by the consortium." });
+  assert.equal(facts.length, 1);
+  assert.equal(facts[0].factType, "tuition");
+  assert.equal(facts[0].label, "Erasmus participation costs");
+});
+
 test("caps candidate count and source text length", () => {
   const text = Array.from({ length: 150 }, (_, index) => `Application deadline: 15 December 2026 reference ${index}`).join("\n");
   assert.equal(parseSourceText({ sourceId: "chevening", text }).length, 100);
