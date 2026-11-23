@@ -1,5 +1,6 @@
 import { createEvidenceSnapshot, EVIDENCE_FACT_TYPES, type EvidenceSnapshot } from "./evidence";
 import { classifySourceUrl } from "./source-registry";
+import { isSourceFetchHistoryRecord, type SourceFetchHistoryRecord } from "./source-history";
 
 export const OPPORTUNITIES_STORAGE_KEY = "scholar-intelligence-opportunities-v1";
 export const EVIDENCE_STORAGE_KEY = "scholar-intelligence-evidence-v1";
@@ -22,6 +23,7 @@ export interface LocalBackup {
   exportedAt: string;
   opportunities: BackupOpportunity[];
   evidence: EvidenceSnapshot[];
+  fetchHistory: SourceFetchHistoryRecord[];
 }
 
 export interface BackupValidation {
@@ -77,17 +79,22 @@ export function validateLocalBackup(value: unknown): BackupValidation {
   if (typeof value.exportedAt !== "string" || !Number.isFinite(Date.parse(value.exportedAt))) errors.push("تاريخ تصدير النسخة غير صالح.");
   if (!Array.isArray(value.opportunities) || value.opportunities.length > 500) errors.push("قائمة الفرص غير صالحة أو تتجاوز 500 فرصة.");
   if (!Array.isArray(value.evidence) || value.evidence.length > 5000) errors.push("قائمة الأدلة غير صالحة أو تتجاوز 5000 دليل.");
+  if (value.fetchHistory !== undefined && (!Array.isArray(value.fetchHistory) || value.fetchHistory.length > 500)) errors.push("سجل جلب المصادر غير صالح أو يتجاوز 500 سجل.");
 
   const opportunities = Array.isArray(value.opportunities) ? value.opportunities : [];
   const evidence = Array.isArray(value.evidence) ? value.evidence : [];
+  const fetchHistory = Array.isArray(value.fetchHistory) ? value.fetchHistory : [];
   const validOpportunities = opportunities.filter(isOpportunity);
   const validEvidence = evidence.filter(isEvidence);
+  const validFetchHistory = fetchHistory.filter(isSourceFetchHistoryRecord);
   if (validOpportunities.length !== opportunities.length) errors.push("توجد سجلات فرص ناقصة أو غير صالحة.");
   if (validEvidence.length !== evidence.length) errors.push("توجد سجلات أدلة ناقصة أو غير صالحة.");
+  if (validFetchHistory.length !== fetchHistory.length) errors.push("توجد سجلات جلب مصادر ناقصة أو غير صالحة.");
 
   const opportunityIds = new Set(validOpportunities.map((item) => item.id));
   const evidenceIds = new Set<string>();
   const opportunityIdSet = new Set<string>();
+  const fetchIds = new Set<string>();
   for (const item of validOpportunities) {
     if (opportunityIdSet.has(item.id)) errors.push("توجد معرفات فرص مكررة داخل النسخة.");
     opportunityIdSet.add(item.id);
@@ -98,6 +105,12 @@ export function validateLocalBackup(value: unknown): BackupValidation {
     if (!opportunityIds.has(item.opportunityId)) errors.push("يوجد دليل مرتبط بفرصة غير موجودة في النسخة.");
   }
 
+  for (const item of validFetchHistory) {
+    if (fetchIds.has(item.id)) errors.push("توجد معرفات جلب مكررة داخل النسخة.");
+    fetchIds.add(item.id);
+    if (!opportunityIds.has(item.opportunityId)) errors.push("يوجد سجل جلب مرتبط بفرصة غير موجودة في النسخة.");
+  }
+
   if (errors.length > 0) return { ok: false, errors, backup: null };
   return {
     ok: true,
@@ -106,7 +119,8 @@ export function validateLocalBackup(value: unknown): BackupValidation {
       schemaVersion: 1,
       exportedAt: value.exportedAt as string,
       opportunities: validOpportunities.map((item) => ({ ...item })),
-      evidence: validEvidence.map((item) => ({ ...item }))
+      evidence: validEvidence.map((item) => ({ ...item })),
+      fetchHistory: validFetchHistory.map((item) => ({ ...item }))
     }
   };
 }
@@ -145,24 +159,28 @@ function mergeById<T extends { id: string }>(existing: T[], incoming: T[], label
 export function mergeLocalBackup(
   existingOpportunities: BackupOpportunity[],
   existingEvidence: EvidenceSnapshot[],
-  incoming: LocalBackup
-): { opportunities: BackupOpportunity[]; evidence: EvidenceSnapshot[]; addedOpportunities: number; addedEvidence: number } {
+  incoming: LocalBackup,
+  existingFetchHistory: SourceFetchHistoryRecord[] = []
+): { opportunities: BackupOpportunity[]; evidence: EvidenceSnapshot[]; fetchHistory: SourceFetchHistoryRecord[]; addedOpportunities: number; addedEvidence: number; addedFetchHistory: number } {
   const opportunities = mergeById(existingOpportunities, incoming.opportunities, "الفرصة");
   const evidence = mergeById(existingEvidence, incoming.evidence, "الدليل");
+  const fetchHistory = mergeById(existingFetchHistory, incoming.fetchHistory ?? [], "سجل الجلب");
   const opportunityIds = new Set(opportunities.map((item) => item.id));
-  if (evidence.some((item) => !opportunityIds.has(item.opportunityId))) {
+  if (evidence.some((item) => !opportunityIds.has(item.opportunityId)) || fetchHistory.some((item) => !opportunityIds.has(item.opportunityId))) {
     throw new Error("توجد أدلة مرتبطة بفرص غير موجودة؛ أوقفنا الاستيراد دون تغيير البيانات.");
   }
   return {
     opportunities,
     evidence,
+    fetchHistory,
     addedOpportunities: opportunities.length - existingOpportunities.length,
-    addedEvidence: evidence.length - existingEvidence.length
+    addedEvidence: evidence.length - existingEvidence.length,
+    addedFetchHistory: fetchHistory.length - existingFetchHistory.length
   };
 }
 
-export function createLocalBackup(opportunities: BackupOpportunity[], evidence: EvidenceSnapshot[], exportedAt = new Date().toISOString()): LocalBackup {
-  const candidate: LocalBackup = { schemaVersion: 1, exportedAt, opportunities, evidence };
+export function createLocalBackup(opportunities: BackupOpportunity[], evidence: EvidenceSnapshot[], exportedAt = new Date().toISOString(), fetchHistory: SourceFetchHistoryRecord[] = []): LocalBackup {
+  const candidate: LocalBackup = { schemaVersion: 1, exportedAt, opportunities, evidence, fetchHistory };
   const validation = validateLocalBackup(candidate);
   if (!validation.ok || !validation.backup) {
     throw new Error(validation.errors.join(" "));
