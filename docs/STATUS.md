@@ -2,7 +2,7 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest merged commit: 5114d27e0ebb8d5f6506d9c0a158c678d628b3af
+Latest merged commit: e5be0acfab95f4ad95a01985bf4d1446214ec3d4
 
 ## Completed
 - Agent instructions, project context, architecture, security, decisions, domain model, roadmap, and handoff docs merged.
@@ -18,7 +18,7 @@ Latest merged commit: 5114d27e0ebb8d5f6506d9c0a158c678d628b3af
 - Unit tests cover the core funding and eligibility rules.
 - npm package-lock.json committed and reproducible npm ci configured.
 - Dependency audit reported zero vulnerabilities in successful CI runs.
-- GitHub Actions run 42 passed: npm ci, npm audit, lint, unit tests (36 total), typecheck, and production build.
+- GitHub Actions run 43 passed: npm ci, npm audit, lint, unit tests (41 total), typecheck, and production build.
 - Vercel project linked to 7thramzy/scholar-intelligence. Last verified production deployment is READY at https://scholar-intelligence.vercel.app (deployment based on commit 55293a1a088b0017ac92a66844cc3b0c8c008b6a). Newer main commits 123ca84 and 5114d27 passed CI but are not yet deployed. Vercel returned HTTP 402 because the team's free API deployment quota exceeded 100 deployments in 24 hours; retry is available after the quota window resets. No paid plan or billing change was made.
 
 ## Current limitations
@@ -28,7 +28,7 @@ Latest merged commit: 5114d27e0ebb8d5f6506d9c0a158c678d628b3af
 - Unregistered HTTPS sources can be retained for manual review but are visibly unverified. They cannot satisfy funding verification gates; only matching evidence from the curated official registry can.
 - A constrained server-side official-page fetch endpoint now accepts only registered HTTPS domains, validates every redirect against the same registered source, reads robots.txt before the page, enforces a 1 MB body cap and 10-second timeout, and returns extracted text plus a SHA-256 content fingerprint.
 - The evidence workspace can fetch a page for manual review; the user must select/copy the relevant excerpt and explicitly add it to the evidence ledger.
-- Source fetch history is now stored locally as metadata only: requested/final URL, source ID, HTTP/content type, title, retrieval time, SHA-256, and first-seen/changed/unchanged state. The full fetched page text is not persisted.
+- Source fetch history is stored locally as metadata only: requested/final URL, source ID, HTTP/content type, title, retrieval time, SHA-256, and first-seen/changed/unchanged state. The full fetched page text is not persisted.
 - Fetch history is included in backup export/import, capped at 500 records, and validated against registered source domains. Server-side persistence and scheduled refresh remain unimplemented.
 - `/evaluation` now wires the deterministic funding and eligibility evaluators into an Arabic RTL workspace. This feature is merged to main and CI-tested, but awaits deployment due to the Vercel daily deployment quota. Funding rows cover all seven required cost categories and require a linked evidence excerpt plus an explicit user review before the category is treated as verified.
 - Eligibility rules must be linked to a saved eligibility/language/program evidence excerpt; hard failures, unknowns, and soft-preference failures remain distinct.
