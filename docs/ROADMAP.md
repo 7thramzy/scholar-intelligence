@@ -50,7 +50,7 @@
 Each phase requires acceptance criteria and verified tests before moving on. Reorder only when a dependency or measured risk justifies it.
 
 
-### Source extraction milestone (feature branch: feat/source-ingestion-normalization)
+### Source extraction milestone (implemented; merged in PR #16)
 - Deterministic parser with shared labelled-fact rules and source-specific profiles for the eight curated portals.
 - Candidate fields cover deadlines, funding cost categories, eligibility, language, duration, and intake.
 - ISO date and explicit-currency amount normalization only; ambiguous values remain raw.
