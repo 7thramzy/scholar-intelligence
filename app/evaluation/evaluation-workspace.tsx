@@ -299,9 +299,9 @@ export default function EvaluationWorkspace() {
                     const reviewed = reviewedEvidence[selectedId]?.[category] === true;
                     return (
                       <div className="funding-input-row" key={category}>
-                        <div className="funding-category-name"><strong>{CATEGORY_LABELS[category]}</strong><small>{supporting.length ? \`\${supporting.length} دليل مرتبط\` : "لا يوجد دليل محفوظ"}</small></div>
-                        <input type="number" min="0" step="0.01" value={currentFundingInputs[category].expected} onChange={(event) => updateFunding(category, "expected", event.target.value)} placeholder="0.00" aria-label={\`إجمالي \${CATEGORY_LABELS[category]}\`} />
-                        <input type="number" min="0" step="0.01" value={currentFundingInputs[category].covered} onChange={(event) => updateFunding(category, "covered", event.target.value)} placeholder="0.00" aria-label={\`المغطى من \${CATEGORY_LABELS[category]}\`} />
+                        <div className="funding-category-name"><strong>{CATEGORY_LABELS[category]}</strong><small>{supporting.length ? supporting.length + " دليل مرتبط" : "لا يوجد دليل محفوظ"}</small></div>
+                        <input type="number" min="0" step="0.01" value={currentFundingInputs[category].expected} onChange={(event) => updateFunding(category, "expected", event.target.value)} placeholder="0.00" aria-label={"إجمالي " + CATEGORY_LABELS[category]} />
+                        <input type="number" min="0" step="0.01" value={currentFundingInputs[category].covered} onChange={(event) => updateFunding(category, "covered", event.target.value)} placeholder="0.00" aria-label={"المغطى من " + CATEGORY_LABELS[category]} />
                         <div className="funding-evidence-review">
                           <label><input type="checkbox" checked={reviewed} disabled={supporting.length === 0} onChange={(event) => { setReviewedEvidence((current) => ({ ...current, [selectedId]: { ...(current[selectedId] ?? {}), [category]: event.target.checked } })); setFundingResults((current) => { const next = { ...current }; delete next[selectedId]; return next; }); }} /> راجعت الدليل</label>
                           {supporting.slice(0, 2).map((item) => <a key={item.id} href={item.sourceUrl} target="_blank" rel="noopener noreferrer">{item.sourceName ?? "المصدر"} · {new Date(item.capturedAt).toLocaleDateString("ar")} ↗</a>)}
@@ -314,7 +314,7 @@ export default function EvaluationWorkspace() {
                 {error && <p className="form-error" role="alert">{error}</p>}
                 <button className="save-opportunity" type="button" onClick={evaluateFundingForSelected}>احسب تغطية التمويل</button>
                 {fundingResult && (
-                  <div className={\`evaluation-result result-\${fundingResult.status}\`}>
+                  <div className={"evaluation-result result-" + fundingResult.status}>
                     <strong>{fundingStatusLabel(fundingResult.status)}</strong>
                     {fundingResult.status !== "unknown" && <div className="result-amounts"><span>إجمالي التكلفة: {formatMoney(fundingResult.requiredMinorUnits, currentCurrency)}</span><span>غير مغطى: {formatMoney(fundingResult.uncoveredMinorUnits, currentCurrency)}</span></div>}
                     {fundingResult.missingCategories.length > 0 && <p>بنود بلا بيانات: {fundingResult.missingCategories.map((item) => CATEGORY_LABELS[item]).join("، ")}</p>}
@@ -350,7 +350,7 @@ export default function EvaluationWorkspace() {
                 </div>
                 <button className="save-opportunity" type="button" onClick={evaluateEligibilityForSelected}>قيّم الأهلية</button>
                 {eligibilityResult && (
-                  <div className={\`evaluation-result result-\${eligibilityResult.status}\`}>
+                  <div className={"evaluation-result result-" + eligibilityResult.status}>
                     <strong>{eligibilityStatusLabel(eligibilityResult.status)}</strong>
                     {eligibilityResult.criteria.map((item) => <p key={item.id}>{item.id}: {item.result === "pass" ? "مستوفى" : item.result === "fail" ? "غير مستوفى" : "غير معروف"}</p>)}
                   </div>
