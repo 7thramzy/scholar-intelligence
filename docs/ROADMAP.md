@@ -25,7 +25,8 @@
 - Constrained server-side HTML/text fetcher with HTTPS source allowlist, redirect validation, robots.txt checks, timeout and response-size limits. (implemented; persistence and durable throttling remain)
 - Immutable server-side fetch history, parser provenance, and freshness checks. (remaining)
 - Program/scholarship normalization. (remaining)
-- Deterministic eligibility, deadline, and full-funding evaluators.
+- Deterministic eligibility and total-cost funding evaluators with UI wiring and evidence review gates. (implemented)
+- Deadline state evaluator and program/scholarship normalization. (remaining)
 - Opportunity add/edit/save and safe local export/import with integrity verification. (implemented)
 - Opportunity search, detail, save, compare. (remaining)
 
