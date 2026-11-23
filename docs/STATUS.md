@@ -2,7 +2,7 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest merged commit: e62116ef3dfe76f83f292a60c42163d0415a0a73
+Latest merged commit: 5114d27e0ebb8d5f6506d9c0a158c678d628b3af
 
 ## Completed
 - Agent instructions, project context, architecture, security, decisions, domain model, roadmap, and handoff docs merged.
@@ -18,8 +18,8 @@ Latest merged commit: e62116ef3dfe76f83f292a60c42163d0415a0a73
 - Unit tests cover the core funding and eligibility rules.
 - npm package-lock.json committed and reproducible npm ci configured.
 - Dependency audit reported zero vulnerabilities in successful CI runs.
-- GitHub Actions run 37 passed: npm ci, npm audit, lint, unit tests (34 total), typecheck, and production build.
-- Vercel project linked to 7thramzy/scholar-intelligence. Production deployment for main commit e62116ef3dfe76f83f292a60c42163d0415a0a73 reached READY at https://scholar-intelligence.vercel.app.
+- GitHub Actions run 42 passed: npm ci, npm audit, lint, unit tests (36 total), typecheck, and production build.
+- Vercel project linked to 7thramzy/scholar-intelligence. Last verified production deployment is READY at https://scholar-intelligence.vercel.app (deployment based on commit 55293a1a088b0017ac92a66844cc3b0c8c008b6a). Newer main commits 123ca84 and 5114d27 passed CI but are not yet deployed. Vercel returned HTTP 402 because the team's free API deployment quota exceeded 100 deployments in 24 hours; retry is available after the quota window resets. No paid plan or billing change was made.
 
 ## Current limitations
 - Opportunity records are browser-local only and do not sync between devices.
@@ -29,7 +29,7 @@ Latest merged commit: e62116ef3dfe76f83f292a60c42163d0415a0a73
 - A constrained server-side official-page fetch endpoint now accepts only registered HTTPS domains, validates every redirect against the same registered source, reads robots.txt before the page, enforces a 1 MB body cap and 10-second timeout, and returns extracted text plus a SHA-256 content fingerprint.
 - The evidence workspace can fetch a page for manual review; the user must select/copy the relevant excerpt and explicitly add it to the evidence ledger.
 - Fetch snapshots are returned for review but are not yet persisted as a historical fetch log; freshness monitoring and scheduled refresh remain unimplemented.
-- `/evaluation` now wires the deterministic funding and eligibility evaluators into an Arabic RTL workspace. Funding rows cover all seven required cost categories and require a linked evidence excerpt plus an explicit user review before the category is treated as verified.
+- `/evaluation` now wires the deterministic funding and eligibility evaluators into an Arabic RTL workspace. This feature is merged to main and CI-tested, but awaits deployment due to the Vercel daily deployment quota. Funding rows cover all seven required cost categories and require a linked evidence excerpt plus an explicit user review before the category is treated as verified.
 - Eligibility rules must be linked to a saved eligibility/language/program evidence excerpt; hard failures, unknowns, and soft-preference failures remain distinct.
 - Applicant values and all evaluation inputs remain session-only and are not persisted to localStorage. Funding results are therefore recalculated after a page reload.
 - Funding claim is intentionally displayed as an unverified source claim; no manually entered record is automatically confirmed as fully funded.
