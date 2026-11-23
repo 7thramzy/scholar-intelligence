@@ -48,3 +48,12 @@
 - Offline read-only cache where safe, PWA installability, accessibility and performance audit.
 
 Each phase requires acceptance criteria and verified tests before moving on. Reorder only when a dependency or measured risk justifies it.
+
+
+### Source extraction milestone (feature branch: feat/source-ingestion-normalization)
+- Deterministic parser with shared labelled-fact rules and source-specific profiles for the eight curated portals.
+- Candidate fields cover deadlines, funding cost categories, eligibility, language, duration, and intake.
+- ISO date and explicit-currency amount normalization only; ambiguous values remain raw.
+- Every candidate includes the source excerpt, confidence hint, parser version, and needs-review state.
+- Evidence UI allows selecting a candidate into the manual evidence form; nothing is saved automatically.
+- Remaining: broaden official-source fixtures, improve multilingual layouts, add parser regression fixtures from reviewed real pages, and evaluate extraction precision before claiming production coverage.
