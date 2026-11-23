@@ -2,7 +2,7 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest merged commit: ee5436fbbcd3d944bdfbbca40733e1f66c7f34ea
+Latest merged commit: 558f7cf513604032a5598d386b83111ae6ec44b7
 
 ## Completed
 - Agent instructions, project context, architecture, security, decisions, domain model, roadmap, and handoff docs merged.
@@ -18,8 +18,8 @@ Latest merged commit: ee5436fbbcd3d944bdfbbca40733e1f66c7f34ea
 - Unit tests cover the core funding and eligibility rules.
 - npm package-lock.json committed and reproducible npm ci configured.
 - Dependency audit reported zero vulnerabilities in successful CI runs.
-- GitHub Actions run 44 passed: npm ci, npm audit, lint, unit tests (41 total), typecheck, and production build.
-- Vercel project linked to 7thramzy/scholar-intelligence. Last verified production deployment is READY at https://scholar-intelligence.vercel.app (deployment based on commit 55293a1a088b0017ac92a66844cc3b0c8c008b6a). Newer main commits 123ca84 and 5114d27 passed CI but are not yet deployed. Vercel returned HTTP 402 because the team's free API deployment quota exceeded 100 deployments in 24 hours; retry is available after the quota window resets. No paid plan or billing change was made.
+- GitHub Actions run 45 passed: npm ci, npm audit, lint, unit tests (44 total), typecheck, and production build.
+- Vercel project linked to 7thramzy/scholar-intelligence. Last verified production deployment is READY at https://scholar-intelligence.vercel.app (deployment dpl_3BK89kV6Y5X7s8awKMfg6NpyMstB, commit ee5436fbbcd3d944bdfbbca40733e1f66c7f34ea). The newer deadline-status merge (main commit 558f7cf) passed CI but has no corresponding production deployment yet. A manual Vercel deployment request returned HTTP 402 because the team's free API deployment quota exceeded 100 deployments in 24 hours. No paid plan or billing change was made.
 
 ## Current limitations
 - Opportunity records are browser-local only and do not sync between devices.
@@ -49,10 +49,11 @@ Latest merged commit: ee5436fbbcd3d944bdfbbca40733e1f66c7f34ea
 - No secrets or personal application documents are stored in the repository.
 
 ## Next actions
-1. Persist source fetch history with content hashes, HTTP metadata, parser versions, and freshness state; add durable rate limiting before broad public use.
-2. Add robust content parsing with provenance and user review, then connect normalized evidence to opportunity facts.
-3. Wire deterministic eligibility and full-cost funding evaluation into opportunity detail and comparison screens.
-4. Add applicant profile and saved-opportunity workflows with explicit review of historical personal data.
-5. Add authentication and privacy boundaries before storing personal profile or documents.
-6. Provision Supabase only as the final infrastructure step, after confirming the organization and that the selected plan/cost is $0; otherwise return for explicit approval.
-7. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
+1. Verify and smoke-test the deadline-status deployment when the Vercel free deployment quota resets.
+2. Persist source fetch history server-side, add parser version provenance, scheduled freshness checks, and durable rate limiting.
+3. Build robust extraction/normalization that maps source facts to program records while retaining reviewable provenance.
+4. Persist public program cost/eligibility criteria and comparison sets without persisting applicant values before authentication.
+5. Add authentication and privacy boundaries before storing any applicant profile or private documents.
+6. Add Gmail/Drive integrations only after consent scopes, token storage, and access isolation are designed.
+7. Provision Supabase only as the final infrastructure step, after confirming the organization and that the selected plan/cost is $0; otherwise return for explicit approval.
+8. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
