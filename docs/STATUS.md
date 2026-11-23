@@ -58,3 +58,16 @@ Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 6. Add Gmail/Drive integrations only after consent scopes, token storage, and access isolation are designed.
 7. Provision Supabase only as the final infrastructure step, after confirming the organization and that the selected plan/cost is $0; otherwise return for explicit approval.
 8. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
+
+
+## Source extraction milestone — feature branch, pending CI
+- Branch: feat/source-ingestion-normalization.
+- Added lib/source-parser.ts with shared labelled extraction and source-specific rule profiles for DAAD, Erasmus Mundus, Study in Japan, Türkiye Scholarships, Chevening, Commonwealth, Stipendium Hungaricum, and Campus France.
+- Candidate fields include deadline, tuition, stipend, living, housing, insurance, travel, visa, mandatory fees, eligibility, language, duration, and intake.
+- Date normalization accepts validated ISO and month-name formats only. Money normalization requires an explicit supported currency code or symbol. Ambiguous dates and currency-less amounts remain raw.
+- POST /api/source-fetch now returns parserVersion and review-only extractedFacts alongside the existing page snapshot.
+- Evidence UI displays candidates, allows selection into the manual evidence form, and requires a separate explicit save. No candidate is auto-approved or auto-persisted.
+- Added parser tests for dates, amounts, source-specific rules, unknown sources, false-positive guardrails, and candidate limits.
+- Validation: awaiting GitHub Actions on this branch/PR. No local runtime or browser test has been claimed.
+- Deployment: production still points to ee5436fbbcd3d944bdfbbca40733e1f66c7f34ea; neither this branch nor the merged deadline-state feature is confirmed deployed.
+- Next: run CI, fix any failures, review extraction precision with representative official-page fixtures, then merge only if all checks pass. Keep Supabase deferred.
