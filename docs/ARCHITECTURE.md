@@ -52,3 +52,9 @@ lib/source-parser.ts implements a deterministic, versioned extraction layer over
 Candidate records retain factType, exact excerpt, rawValue, optional normalizedValue, confidence hint, reviewStatus=needs-review, and parserVersion. Only unambiguous ISO or month-name dates and amounts with explicit supported currency codes/symbols are normalized. Ambiguous numeric dates and currency-less amounts remain unnormalized. The evidence UI requires an explicit user selection and a separate save action before a candidate becomes an evidence snapshot.
 
 The current parser is a conservative heuristic, not a general-purpose document understanding system. It can miss facts in tables, PDFs, scripts, image-only pages, and unusual layouts; it may surface false positives. Candidate absence is not evidence of absence. Parser version and source excerpt must remain attached to every reviewable candidate.
+
+
+### Parser QA and normalization v0.2.0
+Reviewed official-page excerpts are held as short regression fixtures in tests/source-page-fixtures.test.ts, keyed by curated source ID and official URL. The fixtures cover DAAD, Erasmus Mundus, MEXT/Study in Japan, Türkiye Scholarships, Chevening, Commonwealth, Stipendium Hungaricum, and Campus France. They are intentionally short and test candidate category extraction only; they are not a live crawl corpus and do not establish full-page recall or current eligibility.
+
+Money normalization now preserves explicit ranges as a typed money-range value, recognizes JPY symbols and explicit currency words (euros, pounds, yen), validates thousands separators, and rejects reversed ranges or amounts with no explicit currency. The UI displays ranges without reducing them to a single amount. Raw source excerpts remain authoritative for human review.
