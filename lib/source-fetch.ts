@@ -163,18 +163,18 @@ export function extractPageLinks(content: string, contentType: string, baseUrl: 
   if (!contentType.toLowerCase().includes("html")) return [];
   const seen = new Set<string>();
   const links: DiscoveredSourceLink[] = [];
-  const anchorPattern = /<a\\b([^>]*?)href\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))([^>]*)>([\\s\\S]*?)<\\/a>/gi;
+  const anchorPattern = /<a\b([^>]*?)href\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))([^>]*)>([\s\S]*?)<\/a>/gi;
   const discoveryTerms = /scholarship|funding|master|graduate|postgraduate|programme|program|study|student|admission|application|apply|degree|eligib/i;
   const priorityTerms = /scholarship|funding|master|graduate|postgraduate|computer science|artificial intelligence|information technology|data science|engineering/i;
   for (const match of content.matchAll(anchorPattern)) {
     const href = match[2] ?? match[3] ?? match[4] ?? "";
-    const title = decodeBasicEntities((match[6] ?? "").replace(/<[^>]*>/g, " ").replace(/\\s+/g, " ").trim()).slice(0, 240);
+    const title = decodeBasicEntities((match[6] ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()).slice(0, 240);
     if (!href || !title || !discoveryTerms.test(title + " " + href)) continue;
     let parsed: URL;
     try { parsed = new URL(decodeBasicEntities(href), baseUrl); } catch { continue; }
     if (parsed.protocol !== "https:" || parsed.username || parsed.password || (parsed.port && parsed.port !== "443")) continue;
-    if (/\\.(?:pdf|docx?|xlsx?|zip|jpg|jpeg|png)(?:$|\\?)/i.test(parsed.pathname)) continue;
-    const host = parsed.hostname.toLowerCase().replace(/\\.$/, "");
+    if (/\.(?:pdf|docx?|xlsx?|zip|jpg|jpeg|png)(?:$|\?)/i.test(parsed.pathname)) continue;
+    const host = parsed.hostname.toLowerCase().replace(/\.$/, "");
     const registered = source.domains.some((domain) => host === domain || host.endsWith("." + domain));
     if (!registered) continue;
     parsed.hash = "";
