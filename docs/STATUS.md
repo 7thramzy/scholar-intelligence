@@ -73,10 +73,12 @@ Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 - Next: verify production deployment, perform browser smoke tests when an authenticated browser is available, and add representative table/PDF/multilingual page fixtures. Keep Supabase deferred.
 
 
-## Official opportunity discovery — implementation in progress
+## Official opportunity discovery — merged in PR #18
 - Added `/discover` as a local-first workspace that scans the fixed base URLs of the eight curated official sources one at a time.
 - Added `POST /api/source-discover`, which accepts only a registered source ID and never an arbitrary URL. It uses the existing robots.txt checks, redirect validation, timeout and response-size limits.
 - HTML link extraction keeps only relevant HTTPS links whose host remains within the same registered official source domain. External domains, non-HTTPS links, file downloads, duplicates, and irrelevant labels are excluded.
 - Results are presented as discovery candidates with deterministic text relevance hints, not verified opportunities. The owner must review the link and manually enter the institution/program details before explicitly saving a local opportunity. Funding remains unknown.
 - No database, search-engine provider, AI provider, account, or paid service added.
-- Pending: CI, preview/production deployment, and live source scan validation. Root-page coverage may be limited; no claim is made that all programmes are discovered.
+- PR #18 merged to main at commit 5f444461f4de047bfca942e09dcd76279abb4edc after GitHub Actions run 51 passed: dependency audit, ESLint, 63 unit tests, TypeScript, and production build.
+- Vercel has not yet deployed the merge commit. The project's free deployment/build quota check is failing with a build-rate-limit response; no paid upgrade was made.
+- Live source scans and browser interaction remain unverified. Root-page coverage may be limited; no claim is made that all programmes are discovered.
