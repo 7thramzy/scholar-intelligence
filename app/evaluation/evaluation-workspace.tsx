@@ -169,22 +169,22 @@ export default function EvaluationWorkspace() {
   function evaluateFundingForSelected() {
     setError("");
     if (!selectedOpportunity) return;
-    const lines: FundingLine[] = REQUIRED_FUNDING_CATEGORIES.map((category) => {
-      const input = currentFundingInputs[category];
-      const expected = parseAmount(input.expected);
-      const covered = parseAmount(input.covered);
-      if (expected.error || covered.error) throw new Error("أدخل مبالغ موجبة أو صفراً وبحد أقصى منزلتين عشريتين.");
-      const evidenceForCategory = selectedEvidence.filter((item) => CATEGORY_EVIDENCE[category].includes(item.factType as EvidenceFactType));
-      const reviewed = reviewedEvidence[selectedId]?.[category] === true;
-      return {
-        category,
-        currency: currentCurrency,
-        expectedMinorUnits: expected.amount,
-        coveredMinorUnits: covered.amount,
-        evidenceStatus: evidenceForCategory.length === 0 ? "missing" : reviewed ? "verified" : "unverified"
-      };
-    });
     try {
+      const lines: FundingLine[] = REQUIRED_FUNDING_CATEGORIES.map((category) => {
+        const input = currentFundingInputs[category];
+        const expected = parseAmount(input.expected);
+        const covered = parseAmount(input.covered);
+        if (expected.error || covered.error) throw new Error("أدخل مبالغ موجبة أو صفراً وبحد أقصى منزلتين عشريتين.");
+        const evidenceForCategory = selectedEvidence.filter((item) => CATEGORY_EVIDENCE[category].includes(item.factType as EvidenceFactType));
+        const reviewed = reviewedEvidence[selectedId]?.[category] === true;
+        return {
+          category,
+          currency: currentCurrency,
+          expectedMinorUnits: expected.amount,
+          coveredMinorUnits: covered.amount,
+          evidenceStatus: evidenceForCategory.length === 0 ? "missing" : reviewed ? "verified" : "unverified"
+        };
+      });
       setFundingResults((current) => ({ ...current, [selectedId]: evaluateFunding(lines) }));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "تعذر تقييم التمويل.");
@@ -291,7 +291,7 @@ export default function EvaluationWorkspace() {
               <section className="evaluation-panel">
                 <div className="evaluation-panel-heading"><div><span className="eyebrow">TOTAL COST COVERAGE</span><h2>تحليل التمويل الكامل</h2></div><span className="evaluation-icon">◈</span></div>
                 <p className="evaluation-intro">أدخل إجمالي تكلفة البرنامج كاملاً، وليس التكلفة الشهرية. العملة واحدة لجميع البنود، ولا نجمع عملات مختلفة.</p>
-                <label className="currency-select">العملة<select value={currentCurrency} onChange={(event) => setFundingCurrency((current) => ({ ...current, [selectedId]: event.target.value }))}>{CURRENCY_OPTIONS.map((currency) => <option key={currency} value={currency}>{currency}</option>)}</select></label>
+                <label className="currency-select">العملة<select value={currentCurrency} onChange={(event) => { setFundingCurrency((current) => ({ ...current, [selectedId]: event.target.value })); setFundingResults((current) => { const next = { ...current }; delete next[selectedId]; return next; }); }}>{CURRENCY_OPTIONS.map((currency) => <option key={currency} value={currency}>{currency}</option>)}</select></label>
                 <div className="funding-input-table">
                   <div className="funding-input-head"><span>عنصر التكلفة</span><span>التكلفة الكلية</span><span>المغطى بالمنحة</span></div>
                   {REQUIRED_FUNDING_CATEGORIES.map((category) => {
@@ -303,7 +303,7 @@ export default function EvaluationWorkspace() {
                         <input type="number" min="0" step="0.01" value={currentFundingInputs[category].expected} onChange={(event) => updateFunding(category, "expected", event.target.value)} placeholder="0.00" aria-label={\`إجمالي \${CATEGORY_LABELS[category]}\`} />
                         <input type="number" min="0" step="0.01" value={currentFundingInputs[category].covered} onChange={(event) => updateFunding(category, "covered", event.target.value)} placeholder="0.00" aria-label={\`المغطى من \${CATEGORY_LABELS[category]}\`} />
                         <div className="funding-evidence-review">
-                          <label><input type="checkbox" checked={reviewed} disabled={supporting.length === 0} onChange={(event) => setReviewedEvidence((current) => ({ ...current, [selectedId]: { ...(current[selectedId] ?? {}), [category]: event.target.checked } }))} /> راجعت الدليل</label>
+                          <label><input type="checkbox" checked={reviewed} disabled={supporting.length === 0} onChange={(event) => { setReviewedEvidence((current) => ({ ...current, [selectedId]: { ...(current[selectedId] ?? {}), [category]: event.target.checked } })); setFundingResults((current) => { const next = { ...current }; delete next[selectedId]; return next; }); }} /> راجعت الدليل</label>
                           {supporting.slice(0, 2).map((item) => <a key={item.id} href={item.sourceUrl} target="_blank" rel="noopener noreferrer">{item.sourceName ?? "المصدر"} · {new Date(item.capturedAt).toLocaleDateString("ar")} ↗</a>)}
                         </div>
                       </div>
