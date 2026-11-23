@@ -28,3 +28,10 @@ Build a personal-first scholarship and graduate-program intelligence workspace. 
 
 ## Definition of done
 A change is done only when implementation, relevant tests, security implications, docs/status, and actual deployment/runtime evidence (when applicable) are checked. Clearly distinguish implemented, tested, deployed, and verified.
+
+
+## Source extraction rules
+- Parser output is always a review candidate, never an approved fact. Preserve exact excerpts, source provenance, and parser version.
+- Never auto-save parser candidates to the evidence ledger. Require explicit owner selection, review, and save.
+- Normalize dates only when unambiguous and calendar-valid. Normalize money only with an explicit supported currency; do not infer currencies or periods.
+- A parser miss is not proof that a fact is absent. A heuristic match is not proof that the claim is true.
