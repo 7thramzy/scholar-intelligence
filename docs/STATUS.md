@@ -71,3 +71,12 @@ Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 - Vercel preview deployment dpl_DG6uPHfaHYTtUktRhUNaCwvCHhhj is READY for the PR #17 head commit. Vercel production deployment dpl_9PZhUEeYXZELV1RQ6hZTKyxwMWxW is confirmed READY on main at commit 80a87b7e47e777b117827615ec627e0002342150; this deployment includes PR #17 parser QA changes and is live at https://scholar-intelligence.vercel.app.
 - Browser interaction testing and live page extraction are not verified. The official excerpts are short regression fixtures, not a full-page coverage benchmark.
 - Next: verify production deployment, perform browser smoke tests when an authenticated browser is available, and add representative table/PDF/multilingual page fixtures. Keep Supabase deferred.
+
+
+## Official opportunity discovery — implementation in progress
+- Added `/discover` as a local-first workspace that scans the fixed base URLs of the eight curated official sources one at a time.
+- Added `POST /api/source-discover`, which accepts only a registered source ID and never an arbitrary URL. It uses the existing robots.txt checks, redirect validation, timeout and response-size limits.
+- HTML link extraction keeps only relevant HTTPS links whose host remains within the same registered official source domain. External domains, non-HTTPS links, file downloads, duplicates, and irrelevant labels are excluded.
+- Results are presented as discovery candidates with deterministic text relevance hints, not verified opportunities. The owner must review the link and manually enter the institution/program details before explicitly saving a local opportunity. Funding remains unknown.
+- No database, search-engine provider, AI provider, account, or paid service added.
+- Pending: CI, preview/production deployment, and live source scan validation. Root-page coverage may be limited; no claim is made that all programmes are discovered.

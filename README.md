@@ -55,3 +55,7 @@ Each candidate retains its exact excerpt, raw value, optional normalized date or
 
 ### Parser QA update
 Parser v0.2.0 adds reviewed, concise fixtures from the eight curated source portals and preserves explicit currency ranges (including JPY ranges) rather than collapsing them to one value. Explicit currency words such as “euros” are normalized; malformed grouped numbers, reversed ranges, and amounts without an explicit currency are rejected. These tests validate extraction categories against selected official-page excerpts; they do not establish complete page coverage or current scholarship eligibility.
+
+
+### Official opportunity discovery
+The `/discover` workspace scans the eight curated official source landing pages and lists relevant same-domain HTTPS links. Results are candidate links only. Saving requires the owner to review the title and enter the institution; funding remains unverified. The endpoint does not accept arbitrary URLs and reuses the official-source fetch safeguards. Discovery coverage is limited to links present on the configured landing pages; it is not a comprehensive web search.

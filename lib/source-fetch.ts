@@ -24,6 +24,15 @@ export interface OfficialPageSnapshot {
   text: string;
   contentHash: string;
   robotsPolicy: "allowed";
+  discoveredLinks?: DiscoveredSourceLink[];
+}
+
+export interface DiscoveredSourceLink {
+  title: string;
+  url: string;
+  sourceId: string;
+  registered: boolean;
+  relevance: number;
 }
 
 type Fetcher = typeof fetch;
@@ -150,6 +159,35 @@ function decodeBasicEntities(value: string): string {
     .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => String.fromCodePoint(parseInt(code, 16)));
 }
 
+export function extractPageLinks(content: string, contentType: string, baseUrl: string, source: OfficialSource): DiscoveredSourceLink[] {
+  if (!contentType.toLowerCase().includes("html")) return [];
+  const seen = new Set<string>();
+  const links: DiscoveredSourceLink[] = [];
+  const anchorPattern = /<a\b([^>]*?)\shref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))([^>]*)>([\s\S]*?)<\/a>/gi;
+  const discoveryTerms = /scholarship|funding|master|graduate|postgraduate|programme|program|study|student|admission|application|apply|degree|eligib/i;
+  const priorityTerms = /scholarship|funding|master|graduate|postgraduate|computer science|artificial intelligence|information technology|data science|engineering/i;
+  for (const match of content.matchAll(anchorPattern)) {
+    const href = match[2] ?? match[3] ?? match[4] ?? "";
+    const title = decodeBasicEntities((match[6] ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()).slice(0, 240);
+    if (!href || !title || !discoveryTerms.test(title + " " + href)) continue;
+    let parsed: URL;
+    try { parsed = new URL(decodeBasicEntities(href), baseUrl); } catch { continue; }
+    if (parsed.protocol !== "https:" || parsed.username || parsed.password || (parsed.port && parsed.port !== "443")) continue;
+    if (/\.(?:pdf|docx?|xlsx?|zip|jpg|jpeg|png)(?:$|\?)/i.test(parsed.pathname)) continue;
+    const host = parsed.hostname.toLowerCase().replace(/\.$/, "");
+    const registered = source.domains.some((domain) => host === domain || host.endsWith("." + domain));
+    if (!registered) continue;
+    parsed.hash = "";
+    const url = parsed.toString();
+    if (seen.has(url)) continue;
+    seen.add(url);
+    const relevance = (priorityTerms.test(title) ? 2 : 0) + (/master|graduate|postgraduate/i.test(title + " " + url) ? 2 : 0) + (/scholarship|funding/i.test(title + " " + url) ? 2 : 0);
+    links.push({ title, url, sourceId: source.id, registered: true, relevance });
+    if (links.length >= 80) break;
+  }
+  return links.sort((a, b) => b.relevance - a.relevance || a.title.localeCompare(b.title)).slice(0, 60);
+}
+
 export function extractPageText(content: string, contentType: string): { title: string | null; text: string } {
   if (!contentType.toLowerCase().includes("html")) {
     return { title: null, text: content.replace(/\s+/g, " ").trim().slice(0, 30_000) };
@@ -197,11 +235,12 @@ export async function fetchOfficialSourcePage(inputUrl: string, fetcher: Fetcher
   }
   const rawContent = await readBoundedText(response, MAX_BODY_BYTES);
   const { title, text } = extractPageText(rawContent, contentType);
+  const discoveredLinks = extractPageLinks(rawContent, contentType, finalUrl.toString(), source);
   if (!text) throw new SourceFetchError("لم نتمكن من استخراج نص قابل للقراءة من الصفحة.", 422);
   const digest = await globalThis.crypto.subtle.digest("SHA-256", new TextEncoder().encode(rawContent));
   const contentHash = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
   return {
     sourceId: source.id, sourceName: source.name, requestedUrl: url.toString(), finalUrl: finalUrl.toString(),
-    fetchedAt: now().toISOString(), httpStatus: response.status, contentType, title, text, contentHash, robotsPolicy: "allowed"
+    fetchedAt: now().toISOString(), httpStatus: response.status, contentType, title, text, contentHash, robotsPolicy: "allowed", discoveredLinks
   };
 }

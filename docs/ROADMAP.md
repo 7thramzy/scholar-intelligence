@@ -65,3 +65,10 @@ Each phase requires acceptance criteria and verified tests before moving on. Reo
 - Explicit JPY/currency-word parsing and typed money ranges are implemented; malformed amounts and reversed ranges are rejected.
 - The review UI renders ranges without inferring a midpoint or single amount.
 - Remaining: expand table, PDF, and multilingual fixtures and measure recall/precision on complete official pages before claiming broad coverage.
+
+
+### Official opportunity discovery (implementation in progress)
+- Scan the eight curated official portal landing pages with a fixed-source endpoint; no arbitrary URL input.
+- Extract same-domain HTTPS links with deterministic relevance hints and explicit owner review before saving an opportunity.
+- Reuse the existing robots.txt, same-source redirect, timeout, and body-size protections.
+- Remaining: CI and runtime verification; improve source-specific directory URLs and expand registered official university domains based on verified source evidence. Do not treat link discovery as current eligibility/deadline verification.
