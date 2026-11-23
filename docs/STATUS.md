@@ -60,14 +60,14 @@ Latest README update: 699dfb91db4ad1e5ca919ca8ec78325d6563566a
 8. Configure Supabase Auth/RLS and test anonymous denial, owner access, and cross-owner denial.
 
 
-## Source extraction milestone — feature branch, pending CI
+## Source extraction milestone — CI passed, awaiting merge
 - Branch: feat/source-ingestion-normalization.
 - Added lib/source-parser.ts with shared labelled extraction and source-specific rule profiles for DAAD, Erasmus Mundus, Study in Japan, Türkiye Scholarships, Chevening, Commonwealth, Stipendium Hungaricum, and Campus France.
 - Candidate fields include deadline, tuition, stipend, living, housing, insurance, travel, visa, mandatory fees, eligibility, language, duration, and intake.
 - Date normalization accepts validated ISO and month-name formats only. Money normalization requires an explicit supported currency code or symbol. Ambiguous dates and currency-less amounts remain raw.
 - POST /api/source-fetch now returns parserVersion and review-only extractedFacts alongside the existing page snapshot.
 - Evidence UI displays candidates, allows selection into the manual evidence form, and requires a separate explicit save. No candidate is auto-approved or auto-persisted.
-- Added parser tests for dates, amounts, source-specific rules, unknown sources, false-positive guardrails, and candidate limits.
-- Validation: awaiting GitHub Actions on this branch/PR. No local runtime or browser test has been claimed.
-- Deployment: production still points to ee5436fbbcd3d944bdfbbca40733e1f66c7f34ea; neither this branch nor the merged deadline-state feature is confirmed deployed.
-- Next: run CI, fix any failures, review extraction precision with representative official-page fixtures, then merge only if all checks pass. Keep Supabase deferred.
+- CI run 47 (GitHub Actions run 45154593854) passed: dependency audit reported zero vulnerabilities, ESLint passed, all 51 unit tests passed, TypeScript typecheck passed, and production build passed.
+- Vercel preview deployment is READY at https://scholar-intelligence-aytu186ux-ramzys-projects-90515bbd.vercel.app for commit 6d2593e0ef7d2b876d8bc63494b1a6c8251d2a68. Browser-based visual QA and source-page live extraction testing remain unverified.
+- Production remains on older commit ee5436fbbcd3d944bdfbbca40733e1f66c7f34ea. Do not claim this feature or the deadline-status feature is live in production until a new production deployment is READY.
+- Next: merge after successful CI, then verify production deployment quota/status. Keep Supabase deferred.
