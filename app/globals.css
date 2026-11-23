@@ -248,3 +248,28 @@ a{color:inherit;text-decoration:none}
 .history-same{background:#edf5f1;color:#4c8573}
 .history-changed{background:#fbf0e5;color:#a46d3f}
 @media(max-width:600px){.fetch-history-panel{padding:14px}.fetch-history-item{grid-template-columns:1fr auto}.fetch-history-item code{grid-column:1/-1}}
+
+/* Opportunity comparison */
+.compare-picker,.comparison-table-panel{background:#fff;border:1px solid #e8ebef;border-radius:12px;padding:20px;margin-bottom:16px}
+.compare-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.compare-pick-card{display:flex;align-items:flex-start;gap:10px;border:1px solid #e8edf0;border-radius:8px;padding:12px;cursor:pointer;min-width:0}
+.compare-pick-card.selected{border-color:#9ebdb3;background:#f6faf8}
+.compare-pick-card input{margin-top:3px;accent-color:#498878}
+.compare-pick-card span{display:grid;gap:4px;min-width:0}
+.compare-pick-card strong{font-size:10px;line-height:1.7}
+.compare-pick-card small{font-size:9px;color:#89949d}
+.comparison-table-panel .list-panel-heading button{border:1px solid #e1e6e9;background:#fff;border-radius:7px;padding:7px 10px;color:#71808a;font:9px "IBM Plex Sans Arabic",sans-serif;cursor:pointer}
+.comparison-scroll{overflow-x:auto}
+.comparison-table{width:100%;border-collapse:collapse;min-width:620px}
+.comparison-table th,.comparison-table td{padding:13px 12px;text-align:right;border-bottom:1px solid #edf0f2;font-size:10px;vertical-align:top;min-width:140px}
+.comparison-table thead th{background:#f8f9fa;color:#344a57;font-weight:700}
+.comparison-table thead th:first-child,.comparison-table tbody th{min-width:125px;color:#71808a;background:#fafbfb}
+.comparison-table tbody td{color:#52616c;line-height:1.8}
+.comparison-table td a{color:#397e78;font-size:9px}
+.comparison-table td small{display:block;color:#919ba3;font-size:8px;margin-top:4px}
+.compare-trust-good{font-size:9px;color:#4b8573}
+.compare-trust-unknown{font-size:9px;color:#a46d3f}
+.empty-comparison{background:#fff;border:1px dashed #dfe5e8;border-radius:10px;text-align:center;padding:25px}
+.empty-comparison strong{font-size:12px;color:#51616c}
+.empty-comparison p{font-size:10px;color:#8d98a1;margin:6px 0 0}
+@media(max-width:600px){.compare-picker,.comparison-table-panel{padding:14px}.compare-picker-grid{grid-template-columns:1fr}.comparison-table th,.comparison-table td{padding:10px}}
