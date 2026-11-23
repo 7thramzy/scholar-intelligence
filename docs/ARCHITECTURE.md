@@ -14,7 +14,8 @@
 - `/evidence` records user-provided excerpts against locally saved opportunities from any HTTPS URL. Records include source URL, fact type, capture time, registered/unregistered source classification, schema version, and SHA-256 fingerprint.
 - Manual evidence from an unregistered domain remains unverified. Funding confirmation gates only accept evidence from the curated registry; unregistered excerpts can be retained for preliminary eligibility review with an explicit warning.
 - `POST /api/source-fetch` can retrieve HTML/text from the curated registry only, after robots.txt checks and redirect revalidation. It caps response bodies and timeouts, and returns a content hash for review.
-- The fetch endpoint does not persist fetch history. The user manually selects a relevant excerpt before adding it to the local evidence ledger.
+- The evidence workspace persists fetch metadata locally (not full page content), compares the new raw-response hash to the previous fetch for the same opportunity/source URL, and marks first-seen/changed/unchanged state.
+- Fetch history is included in local backup export/import. It is not stored server-side and there is no scheduled refresh. The user manually selects a relevant excerpt before adding it to the evidence ledger.
 - `/evaluation` consumes the deterministic evaluators. Funding evidence is mapped by cost category and requires an explicit user review before being treated as verified. Eligibility rules must reference a saved evidence snapshot.
 - Applicant values and evaluation inputs are session-only; they are not written to browser storage. Funding totals are total-program amounts, and mixed currencies are rejected.
 - This first evidence ledger is browser-local and not tamper-proof. Supabase and server-side snapshots remain deferred.

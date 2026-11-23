@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createLocalBackup, mergeLocalBackup, parseLocalBackupJson, validateLocalBackup, verifyLocalBackupEvidence } from "../lib/local-backup";
 import { createEvidenceSnapshot } from "../lib/evidence";
+import { createFetchHistoryRecord } from "../lib/source-history";
+import type { OfficialPageSnapshot } from "../lib/source-fetch";
 import type { BackupOpportunity } from "../lib/local-backup";
 import type { EvidenceSnapshot } from "../lib/evidence";
 
@@ -99,4 +101,28 @@ test("preserves unregistered evidence as unverified in portable backups", async 
   const backup = createLocalBackup([opportunity], [unverifiedEvidence]);
   assert.equal(backup.evidence[0].sourceTrust, "unverified");
   await verifyLocalBackupEvidence(backup);
+});
+
+test("exports and merges source fetch history with opportunity references", () => {
+  const sourceSnapshot: OfficialPageSnapshot = {
+    sourceId: "daad",
+    sourceName: "DAAD Scholarship Database",
+    requestedUrl: "https://www.daad.de/scholarships/",
+    finalUrl: "https://www.daad.de/scholarships/",
+    fetchedAt: "2026-11-23T00:00:00.000Z",
+    httpStatus: 200,
+    contentType: "text/html",
+    title: "DAAD Scholarships",
+    text: "Official page text",
+    contentHash: "b".repeat(64),
+    robotsPolicy: "allowed"
+  };
+  const history = createFetchHistoryRecord(sourceSnapshot, "opp-1", null, "fetch-1");
+  const backup = createLocalBackup([opportunity], [], "2026-11-23T00:00:00.000Z", [history]);
+  const parsed = parseLocalBackupJson(JSON.stringify(backup));
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.backup?.fetchHistory.length, 1);
+  const merged = mergeLocalBackup([], [], parsed.backup!);
+  assert.equal(merged.addedFetchHistory, 1);
+  assert.equal(merged.fetchHistory[0].contentHash, "b".repeat(64));
 });

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { createLocalBackup, mergeLocalBackup, MAX_BACKUP_BYTES, OPPORTUNITIES_STORAGE_KEY, EVIDENCE_STORAGE_KEY, parseLocalBackupJson, verifyLocalBackupEvidence, type BackupOpportunity } from "@/lib/local-backup";
 import type { EvidenceSnapshot } from "@/lib/evidence";
+import { FETCH_HISTORY_STORAGE_KEY, isSourceFetchHistoryRecord, type SourceFetchHistoryRecord } from "@/lib/source-history";
 
 type FundingClaim = "unknown" | "partial" | "claimed";
 type Opportunity = {
@@ -149,7 +150,10 @@ export default function OpportunityManager() {
       const rawEvidence = localStorage.getItem(EVIDENCE_STORAGE_KEY);
       const parsed: unknown = rawEvidence ? JSON.parse(rawEvidence) : [];
       if (!Array.isArray(parsed)) throw new Error("تعذر التحقق من سجل الأدلة؛ لم يتم حذف الفرصة.");
-      if (parsed.some((item) => item && typeof item === "object" && "opportunityId" in item && item.opportunityId === id)) {
+      const rawHistory = localStorage.getItem(FETCH_HISTORY_STORAGE_KEY);
+      const parsedHistory: unknown = rawHistory ? JSON.parse(rawHistory) : [];
+      if (!Array.isArray(parsedHistory)) throw new Error("تعذر التحقق من سجل الجلب؛ لم يتم حذف الفرصة.");
+      if (parsed.some((item) => item && typeof item === "object" && "opportunityId" in item && item.opportunityId === id) || parsedHistory.some((item) => item && typeof item === "object" && "opportunityId" in item && item.opportunityId === id)) {
         setError("لا يمكن حذف هذه الفرصة لأنها مرتبطة بأدلة محفوظة. احتفظ بسجلها أو صدّر نسخة احتياطية أولاً.");
         return;
       }
@@ -166,9 +170,13 @@ export default function OpportunityManager() {
     setBackupMessage("");
     try {
       const rawEvidence = localStorage.getItem(EVIDENCE_STORAGE_KEY);
+      const rawHistory = localStorage.getItem(FETCH_HISTORY_STORAGE_KEY);
       const parsedEvidence: unknown = rawEvidence ? JSON.parse(rawEvidence) : [];
-      if (!Array.isArray(parsedEvidence)) throw new Error("سجل الأدلة المحلي غير صالح؛ لم يتم إنشاء النسخة.");
-      const backup = createLocalBackup(items as BackupOpportunity[], parsedEvidence as EvidenceSnapshot[]);
+      const parsedHistory: unknown = rawHistory ? JSON.parse(rawHistory) : [];
+      if (!Array.isArray(parsedEvidence) || !Array.isArray(parsedHistory)) throw new Error("سجل الأدلة أو الجلب المحلي غير صالح؛ لم يتم إنشاء النسخة.");
+      const validHistory = parsedHistory.filter(isSourceFetchHistoryRecord);
+      if (validHistory.length !== parsedHistory.length) throw new Error("سجل الجلب يحتوي على سجلات غير صالحة؛ لم يتم تصدير نسخة ناقصة.");
+      const backup = createLocalBackup(items as BackupOpportunity[], parsedEvidence as EvidenceSnapshot[], new Date().toISOString(), validHistory);
       await verifyLocalBackupEvidence(backup);
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json;charset=utf-8" });
       const objectUrl = URL.createObjectURL(blob);
@@ -177,7 +185,7 @@ export default function OpportunityManager() {
       anchor.download = `scholar-intelligence-backup-${new Date().toISOString().slice(0, 10)}.json`;
       anchor.click();
       URL.revokeObjectURL(objectUrl);
-      setBackupMessage("تم تجهيز نسخة احتياطية من الفرص والأدلة المحلية.");
+      setBackupMessage("تم تجهيز نسخة احتياطية من الفرص والأدلة وتاريخ جلب المصادر.");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "تعذر تصدير النسخة الاحتياطية.");
     }
@@ -196,6 +204,7 @@ export default function OpportunityManager() {
 
     const oldOpportunities = localStorage.getItem(STORAGE_KEY);
     const oldEvidence = localStorage.getItem(EVIDENCE_STORAGE_KEY);
+    const oldHistory = localStorage.getItem(FETCH_HISTORY_STORAGE_KEY);
     try {
       const validation = parseLocalBackupJson(await file.text());
       if (!validation.ok || !validation.backup) {
@@ -204,22 +213,31 @@ export default function OpportunityManager() {
       }
       await verifyLocalBackupEvidence(validation.backup);
       const parsedEvidence: unknown = oldEvidence ? JSON.parse(oldEvidence) : [];
-      if (!Array.isArray(parsedEvidence)) throw new Error("سجل الأدلة الحالي غير صالح؛ أوقفنا الاستيراد.");
+      const parsedHistory: unknown = oldHistory ? JSON.parse(oldHistory) : [];
+      if (!Array.isArray(parsedEvidence) || !Array.isArray(parsedHistory)) throw new Error("سجل الأدلة أو الجلب الحالي غير صالح؛ أوقفنا الاستيراد.");
+      const validHistory = parsedHistory.filter(isSourceFetchHistoryRecord);
+      if (validHistory.length !== parsedHistory.length) throw new Error("سجل الجلب الحالي يحتوي على سجلات غير صالحة؛ أوقفنا الاستيراد.");
       const merged = mergeLocalBackup(
         items as BackupOpportunity[],
         parsedEvidence as EvidenceSnapshot[],
-        validation.backup
+        validation.backup,
+        validHistory
       );
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged.opportunities));
       try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged.opportunities));
         localStorage.setItem(EVIDENCE_STORAGE_KEY, JSON.stringify(merged.evidence));
+        localStorage.setItem(FETCH_HISTORY_STORAGE_KEY, JSON.stringify(merged.fetchHistory));
       } catch (storageError) {
         if (oldOpportunities === null) localStorage.removeItem(STORAGE_KEY);
         else localStorage.setItem(STORAGE_KEY, oldOpportunities);
+        if (oldEvidence === null) localStorage.removeItem(EVIDENCE_STORAGE_KEY);
+        else localStorage.setItem(EVIDENCE_STORAGE_KEY, oldEvidence);
+        if (oldHistory === null) localStorage.removeItem(FETCH_HISTORY_STORAGE_KEY);
+        else localStorage.setItem(FETCH_HISTORY_STORAGE_KEY, oldHistory);
         throw storageError;
       }
       setItems(merged.opportunities);
-      setBackupMessage(`اكتمل الدمج: ${merged.addedOpportunities} فرصة و${merged.addedEvidence} دليل جديد. لم تُستبدل السجلات الموجودة.`);
+      setBackupMessage(`اكتمل الدمج: ${merged.addedOpportunities} فرصة و${merged.addedEvidence} دليل و${merged.addedFetchHistory} سجل جلب جديد. لم تُستبدل السجلات الموجودة.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "تعذر استيراد النسخة الاحتياطية.");
     }

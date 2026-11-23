@@ -12,7 +12,7 @@ Latest merged commit: 5114d27e0ebb8d5f6506d9c0a158c678d628b3af
 - Opportunity tracker supports add/remove, institution, field, deadline, official HTTPS source URL, and preliminary funding claim.
 - Opportunity metadata is saved only in this browser's localStorage; stored records are validated before rendering. No applicant profile, documents, credentials, or secrets are stored there.
 - Opportunity records can now be edited. Deletion is blocked when evidence records still reference the opportunity, preserving evidence links.
-- Local backup export/import includes opportunities and evidence, enforces a 5 MB file cap and schema/record limits, merges by ID without overwriting, rejects conflicting IDs, and recomputes SHA-256 evidence fingerprints before restore.
+- Local backup export/import includes opportunities, evidence, and source fetch history; it enforces a 5 MB file cap and schema/record limits, merges by ID without overwriting, rejects conflicting IDs, and recomputes SHA-256 evidence fingerprints before restore.
 - Deterministic funding evaluator covers tuition, living, housing, insurance, travel, visa, and mandatory fees; missing/unverified cost evidence prevents a full-funding result.
 - Deterministic eligibility evaluator supports hard/soft criteria and explicit unknown state; empty criteria and non-finite numbers cannot produce an eligible result.
 - Unit tests cover the core funding and eligibility rules.
@@ -28,7 +28,8 @@ Latest merged commit: 5114d27e0ebb8d5f6506d9c0a158c678d628b3af
 - Unregistered HTTPS sources can be retained for manual review but are visibly unverified. They cannot satisfy funding verification gates; only matching evidence from the curated official registry can.
 - A constrained server-side official-page fetch endpoint now accepts only registered HTTPS domains, validates every redirect against the same registered source, reads robots.txt before the page, enforces a 1 MB body cap and 10-second timeout, and returns extracted text plus a SHA-256 content fingerprint.
 - The evidence workspace can fetch a page for manual review; the user must select/copy the relevant excerpt and explicitly add it to the evidence ledger.
-- Fetch snapshots are returned for review but are not yet persisted as a historical fetch log; freshness monitoring and scheduled refresh remain unimplemented.
+- Source fetch history is now stored locally as metadata only: requested/final URL, source ID, HTTP/content type, title, retrieval time, SHA-256, and first-seen/changed/unchanged state. The full fetched page text is not persisted.
+- Fetch history is included in backup export/import, capped at 500 records, and validated against registered source domains. Server-side persistence and scheduled refresh remain unimplemented.
 - `/evaluation` now wires the deterministic funding and eligibility evaluators into an Arabic RTL workspace. This feature is merged to main and CI-tested, but awaits deployment due to the Vercel daily deployment quota. Funding rows cover all seven required cost categories and require a linked evidence excerpt plus an explicit user review before the category is treated as verified.
 - Eligibility rules must be linked to a saved eligibility/language/program evidence excerpt; hard failures, unknowns, and soft-preference failures remain distinct.
 - Applicant values and all evaluation inputs remain session-only and are not persisted to localStorage. Funding results are therefore recalculated after a page reload.
