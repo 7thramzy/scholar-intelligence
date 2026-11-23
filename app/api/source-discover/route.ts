@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       httpStatus: snapshot.httpStatus,
       contentHash: snapshot.contentHash,
       title: snapshot.title,
-      links: snapshot.discoveredLinks
+      links: snapshot.discoveredLinks ?? []
     }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     if (error instanceof SourceFetchError) {
