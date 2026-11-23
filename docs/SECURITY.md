@@ -41,6 +41,7 @@
 - Read robots.txt before the target page and fail closed when robots policy cannot be checked.
 - Accept only HTML/XHTML/plain text, enforce response byte caps and request timeouts, and never accept arbitrary user-supplied hosts.
 - The current in-memory throttle is best-effort only on serverless deployments. Add durable rate limiting and owner authentication before expanding the endpoint's public use.
+- Persist only fetch metadata and content fingerprints locally, not the fetched page body. Backups validate source identity, timestamps, HTTP status, and hash format before importing history.
 
 ## Operations
 - Validate input server-side, use parameterized queries, protect against CSRF/SSRF, enforce URL/domain allowlists for fetchers, and rate-limit public endpoints.
