@@ -42,6 +42,42 @@ const LABEL_RULES: Array<{ factType: EvidenceFactType; label: string; pattern: R
   { factType: "program-details", label: "Intake", pattern: /application intake|intake|enrolment period|enrollment period|academic year/i, confidence: "medium" }
 ];
 
+const SOURCE_SPECIFIC_RULES: Record<string, Array<{ factType: EvidenceFactType; label: string; pattern: RegExp; confidence: "high" | "medium" }>> = {
+  daad: [
+    { factType: "eligibility", label: "DAAD academic requirements", pattern: /academic admission requirements|subject-specific requirements/i, confidence: "medium" },
+    { factType: "stipend", label: "DAAD scholarship benefits", pattern: /scholarship benefits|monthly scholarship rate/i, confidence: "medium" }
+  ],
+  "erasmus-mundus": [
+    { factType: "tuition", label: "Erasmus participation costs", pattern: /participation costs|participation fee/i, confidence: "high" },
+    { factType: "stipend", label: "Erasmus scholarship amount", pattern: /scholarship amount|individual support/i, confidence: "medium" },
+    { factType: "travel", label: "Erasmus travel contribution", pattern: /travel contribution|travel costs/i, confidence: "high" }
+  ],
+  "study-in-japan": [
+    { factType: "travel", label: "MEXT airfare", pattern: /round-trip airfare|air ticket to japan/i, confidence: "high" },
+    { factType: "tuition", label: "MEXT school fees", pattern: /school fees|entrance examination fee/i, confidence: "medium" }
+  ],
+  "turkiye-scholarships": [
+    { factType: "travel", label: "Türkiye Scholarships flight ticket", pattern: /flight ticket|one-off flight/i, confidence: "high" },
+    { factType: "housing", label: "Türkiye Scholarships accommodation", pattern: /university dormitory|dormitory accommodation/i, confidence: "medium" }
+  ],
+  chevening: [
+    { factType: "eligibility", label: "Chevening work experience", pattern: /work experience requirement|years of work experience/i, confidence: "high" },
+    { factType: "travel", label: "Chevening travel costs", pattern: /travel to and from the uk|return flight/i, confidence: "medium" }
+  ],
+  commonwealth: [
+    { factType: "travel", label: "Commonwealth return airfare", pattern: /return airfare|approved return travel/i, confidence: "high" },
+    { factType: "living", label: "Commonwealth living allowance", pattern: /approved living allowance|living allowance rate/i, confidence: "high" }
+  ],
+  "stipendium-hungaricum": [
+    { factType: "housing", label: "Stipendium accommodation contribution", pattern: /accommodation contribution|dormitory placement/i, confidence: "high" },
+    { factType: "insurance", label: "Stipendium medical coverage", pattern: /medical insurance|health care services/i, confidence: "high" }
+  ],
+  "campus-france": [
+    { factType: "tuition", label: "Campus France tuition exemption", pattern: /tuition fee exemption|exemption from tuition fees/i, confidence: "high" },
+    { factType: "insurance", label: "Campus France social protection", pattern: /social security coverage|health protection/i, confidence: "medium" }
+  ]
+};
+
 const MONTHS: Record<string, string> = {
   jan: "01", january: "01", feb: "02", february: "02", mar: "03", march: "03",
   apr: "04", april: "04", may: "05", jun: "06", june: "06", jul: "07", july: "07",
@@ -74,7 +110,8 @@ export function normalizeDate(value: string): string | null {
 export function normalizeMoney(value: string): { amount: number; currency: string } | null {
   const match = value.match(/\b(USD|EUR|GBP|JPY|CNY|RMB|TRY|HUF|CHF|CAD|AUD|SAR|YER)\s*([\d,]+(?:\.\d{1,2})?)|([€£$])\s*([\d,]+(?:\.\d{1,2})?)|\b([\d,]+(?:\.\d{1,2})?)\s*(USD|EUR|GBP|JPY|CNY|RMB|TRY|HUF|CHF|CAD|AUD|SAR|YER)\b/i);
   if (!match) return null;
-  const currency = (match[1] ?? match[6] ?? ({ "€": "EUR", "£": "GBP", "$": "USD" } as Record<string, string>)[match[3]] ?? "").toUpperCase();
+  const symbolCurrency = match[3] ? ({ "€": "EUR", "£": "GBP", "$": "USD" } as Record<string, string>)[match[3]] : undefined;
+  const currency = (match[1] ?? match[6] ?? symbolCurrency ?? "").toUpperCase();
   const rawAmount = match[2] ?? match[4] ?? match[5];
   const amount = Number(rawAmount.replace(/,/g, ""));
   if (!currency || !Number.isFinite(amount) || amount < 0) return null;
