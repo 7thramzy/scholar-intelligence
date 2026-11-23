@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { createEvidenceSnapshot, EVIDENCE_FACT_TYPES, type EvidenceFactType, type EvidenceSnapshot } from "@/lib/evidence";
 import { OFFICIAL_SOURCES, type SourceCategory } from "@/lib/source-registry";
+import { createFetchHistoryRecord, FETCH_HISTORY_STORAGE_KEY, isSourceFetchHistoryRecord, type SourceFetchHistoryRecord } from "@/lib/source-history";
+import type { OfficialPageSnapshot } from "@/lib/source-fetch";
 
 type Opportunity = {
   id: string;
@@ -56,6 +58,7 @@ function isSnapshot(value: unknown): value is EvidenceSnapshot {
 export default function EvidenceWorkspace() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [snapshots, setSnapshots] = useState<EvidenceSnapshot[]>([]);
+  const [fetchHistory, setFetchHistory] = useState<SourceFetchHistoryRecord[]>([]);
   const [selectedId, setSelectedId] = useState("");
   const [factType, setFactType] = useState<EvidenceFactType>("deadline");
   const [sourceUrl, setSourceUrl] = useState("");
@@ -70,12 +73,16 @@ export default function EvidenceWorkspace() {
     try {
       const rawOpportunities = localStorage.getItem(OPPORTUNITIES_KEY);
       const rawEvidence = localStorage.getItem(EVIDENCE_KEY);
+      const rawFetchHistory = localStorage.getItem(FETCH_HISTORY_STORAGE_KEY);
       const parsedOpportunities: unknown = rawOpportunities ? JSON.parse(rawOpportunities) : [];
       const parsedEvidence: unknown = rawEvidence ? JSON.parse(rawEvidence) : [];
+      const parsedFetchHistory: unknown = rawFetchHistory ? JSON.parse(rawFetchHistory) : [];
       const validOpportunities = Array.isArray(parsedOpportunities) ? parsedOpportunities.filter(isOpportunity) : [];
       const validSnapshots = Array.isArray(parsedEvidence) ? parsedEvidence.filter(isSnapshot) : [];
+      const validFetchHistory = Array.isArray(parsedFetchHistory) ? parsedFetchHistory.filter(isSourceFetchHistoryRecord) : [];
       setOpportunities(validOpportunities);
       setSnapshots(validSnapshots);
+      setFetchHistory(validFetchHistory);
       if (validOpportunities[0]) {
         setSelectedId(validOpportunities[0].id);
         setSourceUrl(validOpportunities[0].sourceUrl);
@@ -88,6 +95,10 @@ export default function EvidenceWorkspace() {
   }, []);
 
   const selectedOpportunity = opportunities.find((item) => item.id === selectedId) ?? null;
+  const selectedFetchHistory = useMemo(
+    () => fetchHistory.filter((item) => item.opportunityId === selectedId).sort((a, b) => b.fetchedAt.localeCompare(a.fetchedAt)),
+    [fetchHistory, selectedId]
+  );
   const selectedSnapshots = useMemo(
     () => snapshots.filter((item) => item.opportunityId === selectedId).sort((a, b) => b.capturedAt.localeCompare(a.capturedAt)),
     [snapshots, selectedId]
@@ -120,11 +131,27 @@ export default function EvidenceWorkspace() {
           !("finalUrl" in result) || typeof result.finalUrl !== "string") {
         throw new Error("استجابة المصدر غير مكتملة.");
       }
+      const snapshot = result as unknown as OfficialPageSnapshot;
+      if (typeof snapshot.sourceId !== "string" || typeof snapshot.sourceName !== "string" ||
+          typeof snapshot.requestedUrl !== "string" || typeof snapshot.fetchedAt !== "string" ||
+          typeof snapshot.httpStatus !== "number" || typeof snapshot.contentType !== "string" ||
+          snapshot.robotsPolicy !== "allowed") {
+        throw new Error("بيانات سجل الجلب غير مكتملة.");
+      }
+      const previous = fetchHistory.find((item) =>
+        item.opportunityId === selectedId &&
+        item.sourceId === snapshot.sourceId &&
+        item.requestedUrl === snapshot.requestedUrl
+      );
+      const historyRecord = createFetchHistoryRecord(snapshot, selectedId, previous?.contentHash ?? null, crypto.randomUUID());
+      const nextHistory = [historyRecord, ...fetchHistory].slice(0, 500);
+      localStorage.setItem(FETCH_HISTORY_STORAGE_KEY, JSON.stringify(nextHistory));
+      setFetchHistory(nextHistory);
       setPagePreview({
-        title: "title" in result && typeof result.title === "string" ? result.title : null,
-        text: result.text,
-        contentHash: result.contentHash,
-        finalUrl: result.finalUrl
+        title: snapshot.title,
+        text: snapshot.text,
+        contentHash: snapshot.contentHash,
+        finalUrl: snapshot.finalUrl
       });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "تعذر جلب الصفحة الرسمية.");
@@ -187,7 +214,7 @@ export default function EvidenceWorkspace() {
           </div>
         </section>
 
-        <div className="evidence-layout">
+        <section className="fetch-history-panel">\n          <div className="list-panel-heading"><div><h2>تاريخ تحديث المصدر</h2><p>{selectedOpportunity ? selectedOpportunity.title : "اختر فرصة"}</p></div><span className="list-count">{selectedFetchHistory.length}</span></div>\n          {selectedFetchHistory.length === 0 ? <div className="empty-history">لم يتم جلب صفحات لهذه الفرصة بعد.</div> : <div className="fetch-history-list">{selectedFetchHistory.slice(0, 10).map((item) => <article className="fetch-history-item" key={item.id}><div><strong>{item.title ?? item.sourceName}</strong><small>{new Date(item.fetchedAt).toLocaleString("ar")}</small></div><span className={item.changedFromPrevious === null ? "history-first" : item.changedFromPrevious ? "history-changed" : "history-same"}>{item.changedFromPrevious === null ? "أول رصد" : item.changedFromPrevious ? "تغيّر المحتوى" : "لم يتغير المحتوى"}</span><code>{item.contentHash.slice(0, 16)}…</code></article>)}</div>}\n        </section>\n\n        <div className="evidence-layout">
           <section className="opportunity-form-panel">
             <div className="form-panel-heading"><span className="form-icon">＋</span><div><h2>إضافة دليل جديد</h2><p>انسخ المقتطف من صفحة المصدر كما هو</p></div></div>
             {!loaded ? <p>جارٍ تحميل السجلات…</p> : opportunities.length === 0 ? (
