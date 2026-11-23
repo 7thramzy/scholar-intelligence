@@ -28,10 +28,13 @@ Latest merged commit: e62116ef3dfe76f83f292a60c42163d0415a0a73
 - A constrained server-side official-page fetch endpoint now accepts only registered HTTPS domains, validates every redirect against the same registered source, reads robots.txt before the page, enforces a 1 MB body cap and 10-second timeout, and returns extracted text plus a SHA-256 content fingerprint.
 - The evidence workspace can fetch a page for manual review; the user must select/copy the relevant excerpt and explicitly add it to the evidence ledger.
 - Fetch snapshots are returned for review but are not yet persisted as a historical fetch log; freshness monitoring and scheduled refresh remain unimplemented.
-- Funding and eligibility evaluators are tested pure modules but are not yet wired into the opportunity UI.
+- `/evaluation` now wires the deterministic funding and eligibility evaluators into an Arabic RTL workspace. Funding rows cover all seven required cost categories and require a linked evidence excerpt plus an explicit user review before the category is treated as verified.
+- Eligibility rules must be linked to a saved eligibility/language/program evidence excerpt; hard failures, unknowns, and soft-preference failures remain distinct.
+- Applicant values and all evaluation inputs remain session-only and are not persisted to localStorage. Funding results are therefore recalculated after a page reload.
 - Funding claim is intentionally displayed as an unverified source claim; no manually entered record is automatically confirmed as fully funded.
 - No sign-in, database, AI provider, Gmail/Drive integration, private document storage, or reminders.
 - No browser-based visual QA or real-device responsive testing has been completed.
+- Evaluation is an evidence-guided planning aid, not an admissions decision or independent confirmation from a scholarship provider.
 - Evidence fingerprints are integrity aids, not digital signatures or proof that an excerpt genuinely appeared on the linked page.
 - The fetch endpoint is read-only and restricted to the curated domain list. Its in-memory throttle is best-effort on serverless infrastructure, not a durable distributed rate limiter; durable abuse controls and owner authentication are required before broad public use.
 
