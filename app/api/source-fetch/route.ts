@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchOfficialSourcePage, SourceFetchError } from "@/lib/source-fetch";
+import { parseSourceText, SOURCE_PARSER_VERSION } from "@/lib/source-parser";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,7 +33,12 @@ export async function POST(request: NextRequest) {
   lastFetchAt = now;
   try {
     const snapshot = await fetchOfficialSourcePage(url);
-    return NextResponse.json(snapshot, { headers: { "Cache-Control": "no-store" } });
+    const extractedFacts = parseSourceText({ sourceId: snapshot.sourceId, text: snapshot.text });
+    return NextResponse.json({
+      ...snapshot,
+      parserVersion: SOURCE_PARSER_VERSION,
+      extractedFacts
+    }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     if (error instanceof SourceFetchError) {
       return NextResponse.json({ error: error.message }, { status: error.statusCode, headers: { "Cache-Control": "no-store" } });
