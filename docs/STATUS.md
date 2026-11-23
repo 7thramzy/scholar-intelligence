@@ -2,7 +2,7 @@
 
 Last verified: 2026-11-23
 Default branch: main
-Latest merged commit: e5be0acfab95f4ad95a01985bf4d1446214ec3d4
+Latest merged commit: ee5436fbbcd3d944bdfbbca40733e1f66c7f34ea
 
 ## Completed
 - Agent instructions, project context, architecture, security, decisions, domain model, roadmap, and handoff docs merged.
@@ -18,7 +18,7 @@ Latest merged commit: e5be0acfab95f4ad95a01985bf4d1446214ec3d4
 - Unit tests cover the core funding and eligibility rules.
 - npm package-lock.json committed and reproducible npm ci configured.
 - Dependency audit reported zero vulnerabilities in successful CI runs.
-- GitHub Actions run 43 passed: npm ci, npm audit, lint, unit tests (41 total), typecheck, and production build.
+- GitHub Actions run 44 passed: npm ci, npm audit, lint, unit tests (41 total), typecheck, and production build.
 - Vercel project linked to 7thramzy/scholar-intelligence. Last verified production deployment is READY at https://scholar-intelligence.vercel.app (deployment based on commit 55293a1a088b0017ac92a66844cc3b0c8c008b6a). Newer main commits 123ca84 and 5114d27 passed CI but are not yet deployed. Vercel returned HTTP 402 because the team's free API deployment quota exceeded 100 deployments in 24 hours; retry is available after the quota window resets. No paid plan or billing change was made.
 
 ## Current limitations
