@@ -119,6 +119,7 @@ export type NormalizedMoney =
 const MONEY_CODE_PREFIX = /\b(USD|EUR|GBP|JPY|CNY|RMB|TRY|HUF|CHF|CAD|AUD|SAR|YER)\s*([\d,]+(?:\.\d{1,2})?)(?:\s*(?:-|–|—|~|～|to)\s*([\d,]+(?:\.\d{1,2})?))?/i;
 const MONEY_SYMBOL_PREFIX = /([€£$¥￥])\s*([\d,]+(?:\.\d{1,2})?)(?:\s*(?:-|–|—|~|～|to)\s*([\d,]+(?:\.\d{1,2})?))?/i;
 const MONEY_CODE_SUFFIX = /\b([\d,]+(?:\.\d{1,2})?)(?:\s*(?:-|–|—|~|～|to)\s*([\d,]+(?:\.\d{1,2})?))?\s*(USD|EUR|GBP|JPY|CNY|RMB|TRY|HUF|CHF|CAD|AUD|SAR|YER)\b/i;
+const MONEY_WORD_SUFFIX = /\b([\d,]+(?:\.\d{1,2})?)(?:\s*(?:-|–|—|~|～|to)\s*([\d,]+(?:\.\d{1,2})?))?\s*(euros?|pounds?|yen)\b/i;
 
 function parseAmount(value: string): number | null {
   if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,2})?$/.test(value)) return null;
@@ -130,7 +131,8 @@ export function normalizeMoney(value: string): NormalizedMoney | null {
   const codePrefix = MONEY_CODE_PREFIX.exec(value);
   const symbolPrefix = MONEY_SYMBOL_PREFIX.exec(value);
   const codeSuffix = MONEY_CODE_SUFFIX.exec(value);
-  const match = codePrefix ?? symbolPrefix ?? codeSuffix;
+  const wordSuffix = MONEY_WORD_SUFFIX.exec(value);
+  const match = codePrefix ?? symbolPrefix ?? codeSuffix ?? wordSuffix;
   if (!match) return null;
 
   let currency: string;
@@ -144,10 +146,15 @@ export function normalizeMoney(value: string): NormalizedMoney | null {
     currency = ({ "€": "EUR", "£": "GBP", "$": "USD", "¥": "JPY", "￥": "JPY" } as Record<string, string>)[symbolPrefix[1]];
     rawMinimum = symbolPrefix[2];
     rawMaximum = symbolPrefix[3];
+  } else if (codeSuffix) {
+    currency = codeSuffix[3];
+    rawMinimum = codeSuffix[1];
+    rawMaximum = codeSuffix[2];
   } else {
-    currency = codeSuffix![3];
-    rawMinimum = codeSuffix![1];
-    rawMaximum = codeSuffix![2];
+    const word = wordSuffix![3].toLowerCase();
+    currency = word.startsWith("euro") ? "EUR" : word.startsWith("pound") ? "GBP" : "JPY";
+    rawMinimum = wordSuffix![1];
+    rawMaximum = wordSuffix![2];
   }
 
   const minimum = parseAmount(rawMinimum);
